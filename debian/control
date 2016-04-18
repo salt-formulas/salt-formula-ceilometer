@@ -1,12 +1,12 @@
 Source: salt-formula-ceilometer
 Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
 Section: admin
-Priority: optional
+Priority: extra
 Build-Depends: debhelper (>= 9),
                openstack-pkg-tools,
-               salt-master,
-               python,
-               python-yaml,
+Build-Depends-Indep: salt-master,
+                     python-all,
+                     python-yaml,
 Standards-Version: 3.9.7
 Homepage: https://wiki.openstack.org/wiki/OpenStackSalt
 Vcs-Browser: https://github.com/openstack/salt-formula-ceilometer
@@ -15,5 +15,9 @@ Vcs-Git: https://github.com/openstack/salt-formula-ceilometer.git
 Package: salt-formula-ceilometer
 Architecture: all
 Depends: ${misc:Depends}, salt-master, reclass
-Description: Ceilometer Salt formula
- Install and configure Ceilometer server and client.
+Description: Salt formula for OpenStack Ceilometer
+ Salt is a powerful remote execution manager that can be used to
+ administer servers in a fast and efficient way.
+ .
+ This SaltStack formula manages both installation and configuration of
+ OpenStack Ceilometer.
