@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9),
                salt-master,
                python,
                python-yaml,
-Standards-Version: 3.9.6
+Standards-Version: 3.9.7
 Homepage: https://wiki.openstack.org/wiki/OpenStackSalt
 Vcs-Browser: https://github.com/openstack/salt-formula-ceilometer
 Vcs-Git: https://github.com/openstack/salt-formula-ceilometer.git
