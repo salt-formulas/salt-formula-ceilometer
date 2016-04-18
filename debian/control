@@ -10,8 +10,8 @@ Build-Depends-Indep: python-all,
                      salt-master,
 Standards-Version: 3.9.8
 Homepage: https://wiki.openstack.org/wiki/OpenStackSalt
-Vcs-Browser: https://github.com/openstack/salt-formula-ceilometer
-Vcs-Git: https://github.com/openstack/salt-formula-ceilometer.git
+Vcs-Browser: https://anonscm.debian.org/cgit/openstack/salt-formula-ceilometer.git/
+Vcs-Git: https://anonscm.debian.org/git/openstack/salt-formula-ceilometer.git
 
 Package: salt-formula-ceilometer
 Architecture: all
