@@ -1,3 +1,9 @@
+salt-formula-ceilometer (2016.4.1-2) UNRELEASED; urgency=medium
+
+  * d/copyright: Added myself to Debian part
+
+ -- Filip Pytloun <filip@pytloun.cz>  Sat, 23 Apr 2016 16:35:06 +0200
+
 salt-formula-ceilometer (2016.4.1-1) unstable; urgency=medium
 
   * Initial release (Closes: #821460)
