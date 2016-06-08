@@ -1,8 +1,8 @@
-salt-formula-ceilometer (2016.4.1-3) UNRELEASED; urgency=medium
+salt-formula-ceilometer (2016.4.1-3) unstable; urgency=medium
 
   * Added Debian tests
 
- -- Ondřej Nový <novy@ondrej.org>  Wed, 08 Jun 2016 21:01:33 +0200
+ -- Ondřej Nový <novy@ondrej.org>  Wed, 08 Jun 2016 21:27:12 +0200
 
 salt-formula-ceilometer (2016.4.1-2) unstable; urgency=medium
 
