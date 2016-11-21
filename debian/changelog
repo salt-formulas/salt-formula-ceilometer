@@ -1,6 +1,7 @@
 salt-formula-ceilometer (2016.4.1-4) UNRELEASED; urgency=medium
 
   * d/{control,copyright}: Use my @debian.org email address
+  * Bumped debhelper version to 10
 
  -- Ondřej Nový <onovy@debian.org>  Mon, 20 Jun 2016 20:14:00 +0200
 
