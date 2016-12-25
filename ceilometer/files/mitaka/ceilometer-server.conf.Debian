@@ -193,11 +193,14 @@ alarm_history_time_to_live = {{ server.ttl }}
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
-#connection = <None>
-{%- if server.database.members is defined %}
-connection={{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{% for member in server.database.members %}{{ member.host }}:{{ member.port }}{% if not loop.last %},{% endif %}{% endfor %}/{{ server.database.name }}
+metering_connection = stacklight://{{ server.database.influxdb.user }}:{{ server.database.influxdb.password }}@{{ server.database.influxdb.host }}:{{ server.database.influxdb.port }}/{{ server.database.influxdb.database }}
+
+{%- if server.database.elasticsearch.enabled %}
+resource_connection = es://{{ server.database.elasticsearch.host}}:{{server.database.elasticsearch.port }}
+event_connection = es://{{ server.database.elasticsearch.host}}:{{server.database.elasticsearch.port }}
 {%- else %}
-connection={{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}:{{ server.database.port }}/{{ server.database.name }}
+resource_connection = es://localhost:9200
+event_connection = log://
 {%- endif %}
 
 # The SQLAlchemy connection string to use to connect to the slave
@@ -388,13 +391,14 @@ ack_on_event_error=True
 
 # Save event details. (boolean value)
 #store_events=false
-store_events=False
+store_events=True
 
 # Messaging URLs to listen for notifications. Example:
 # transport://user:pass@host1:port[,hostN:portN]/virtual_host
 # (DEFAULT/transport_url is used if empty) (multi valued)
 #messaging_urls=
 
+disable_non_metric_meters = False
 
 [publisher]
 
@@ -595,6 +599,7 @@ rabbit_virtual_host = {{ server.message_queue.virtual_host }}
 # Options defined in ceilometer.service
 #
 
+
 # User name to use for OpenStack service access. (string
 # value)
 #os_username=ceilometer
@@ -623,7 +628,7 @@ os_auth_url=http://{{ server.identity.host }}:5000/v2.0
 # Region name to use for OpenStack service endpoints. (string
 # value)
 #os_region_name=<None>
-os_region_name=RegionOne
+os_region_name={{ server.get('region', 'RegionOne') }}
 
 # Type of endpoint in Identity service catalog to use for
 # communication with OpenStack services. (string value)

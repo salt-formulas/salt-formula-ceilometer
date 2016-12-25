@@ -1,7 +1,8 @@
 ceilometer:
   server:
+    region: RegionOne
     enabled: true
-    version: liberty
+    version: mitaka
     cluster: true
     secret: password
     ttl: 86400
@@ -19,12 +20,13 @@ ceilometer:
       password: password
     message_queue:
       engine: rabbitmq
-      host: 127.0.0.1
-      port: 5672
+      members:
+      - host: 127.0.0.1
+      - host: 127.0.0.1
+      - host: 127.0.0.1
       user: openstack
       password: password
       virtual_host: '/openstack'
-      ha_queues: true
       # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715
       rpc_thread_pool_size: 5
     database:

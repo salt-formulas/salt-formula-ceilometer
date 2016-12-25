@@ -388,13 +388,14 @@ ack_on_event_error=True
 
 # Save event details. (boolean value)
 #store_events=false
-store_events=False
+store_events=True
 
 # Messaging URLs to listen for notifications. Example:
 # transport://user:pass@host1:port[,hostN:portN]/virtual_host
 # (DEFAULT/transport_url is used if empty) (multi valued)
 #messaging_urls=
 
+disable_non_metric_meters = False
 
 [publisher]
 
@@ -595,6 +596,7 @@ rabbit_virtual_host = {{ server.message_queue.virtual_host }}
 # Options defined in ceilometer.service
 #
 
+
 # User name to use for OpenStack service access. (string
 # value)
 #os_username=ceilometer
@@ -623,7 +625,7 @@ os_auth_url=http://{{ server.identity.host }}:5000/v2.0
 # Region name to use for OpenStack service endpoints. (string
 # value)
 #os_region_name=<None>
-os_region_name=RegionOne
+os_region_name={{ server.get('region', 'RegionOne') }}
 
 # Type of endpoint in Identity service catalog to use for
 # communication with OpenStack services. (string value)
