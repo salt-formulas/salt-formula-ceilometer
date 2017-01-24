@@ -4,12 +4,12 @@ Uploaders: Filip Pytloun <filip@pytloun.cz>,
            Ondřej Nový <onovy@debian.org>,
 Section: admin
 Priority: extra
-Build-Depends: debhelper (>= 10),
+Build-Depends: debhelper (>= 9),
                openstack-pkg-tools,
 Build-Depends-Indep: python-all,
                      python-yaml,
                      salt-master,
-Standards-Version: 3.9.8
+Standards-Version: 3.9.6
 Homepage: https://wiki.openstack.org/wiki/OpenStackSalt
 Vcs-Browser: https://anonscm.debian.org/cgit/openstack/salt-formula-ceilometer.git/
 Vcs-Git: https://anonscm.debian.org/git/openstack/salt-formula-ceilometer.git
