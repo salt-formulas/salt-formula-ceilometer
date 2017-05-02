@@ -11,6 +11,16 @@ sources:
       interval: 60
       meters:
           - "*"
+          - "!volume.create.*"
+          - "!volume.delete.*"
+          - "!volume.update.*"
+          - "!volume.resize.*"
+          - "!volume.attach.*"
+          - "!volume.detach.*"
+          - "!snapshot.create.*"
+          - "!snapshot.delete.*"
+          - "!identity.authenticate.*"
+          - "!storage.api.request"
       sinks:
           - meter_sink
 sinks:
