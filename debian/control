@@ -8,6 +8,7 @@ Build-Depends: debhelper (>= 10),
                openstack-pkg-tools,
 Build-Depends-Indep: python-all,
                      python-yaml,
+                     salt-formula-keystone,
                      salt-master,
 Standards-Version: 3.9.8
 Homepage: https://wiki.openstack.org/wiki/OpenStackSalt
