@@ -1,4 +1,3 @@
-
 ==================
 Ceilometer Formula
 ==================
@@ -16,6 +15,7 @@ Sample Pillars
 ==============
 
 Ceilometer API/controller node
+------------------------------
 
 .. code-block:: yaml
 
@@ -44,6 +44,7 @@ Ceilometer API/controller node
           virtual_host: '/openstack'
 
 Configuration of policy.json file
+---------------------------------
 
 .. code-block:: yaml
 
@@ -56,8 +57,10 @@ Configuration of policy.json file
           'telemetry:get_resource':
 
 Databases configuration
+-----------------------
 
 MongoDB example:
+~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -77,6 +80,7 @@ MongoDB example:
           password: password
 
 InfluxDB/Elasticsearch example:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -95,6 +99,7 @@ InfluxDB/Elasticsearch example:
             port: 9200
 
 Client-side RabbitMQ HA setup
+-----------------------------
 
 .. code-block:: yaml
 
@@ -114,6 +119,7 @@ Client-side RabbitMQ HA setup
 
 
 Ceilometer Graphite publisher
+-----------------------------
 
 .. code-block:: yaml
 
@@ -127,6 +133,7 @@ Ceilometer Graphite publisher
             port: 2003
 
 Ceilometer compute agent
+------------------------
 
 .. code-block:: yaml
 
@@ -150,6 +157,46 @@ Ceilometer compute agent
           password: pwd
           virtual_host: '/openstack'
           rabbit_ha_queues: true
+
+
+Ceilometer instance discovery method
+------------------------------------
+
+.. code-block:: yaml
+
+    ceilometer:
+      agent:
+        ...
+        discovery_method: naive
+
+
+Keystone auth caching
+---------------------
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        cache:
+          members:
+            - host: 10.10.10.10
+              port: 11211
+            - host: 10.10.10.11
+              port: 11211
+            - host: 10.10.10.12
+              port: 11211
+      agent:
+        cache:
+          members:
+            - host: 10.10.10.10
+              port: 11211
+            - host: 10.10.10.11
+              port: 11211
+            - host: 10.10.10.12
+              port: 11211
+
+
+
 
 More Information
 ================

@@ -86,6 +86,36 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 
 {%- endif %}
 
+# for Ocata and newer
+{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka', 'newton'] %}
+
+/etc/apache2/sites-available/ceilometer-api.conf:
+  file.managed:
+  - source: salt://ceilometer/files/{{ server.version }}/ceilometer-api.apache2.conf.Debian
+  - template: jinja
+  - require:
+    - pkg: ceilometer_server_packages
+
+ceilometer_api_config:
+  file.symlink:
+     - name: /etc/apache2/sites-enabled/ceilometer-api.conf
+     - target: /etc/apache2/sites-available/ceilometer-api.conf
+
+ceilometer_apache_restart:
+  service.running:
+  - enable: true
+  - name: apache2
+  - watch:
+    - file: /etc/ceilometer/ceilometer.conf
+    - file: /etc/apache2/sites-available/ceilometer-api.conf
+    - file: /etc/ceilometer/event_definitions.yaml
+    - file: /etc/ceilometer/event_pipeline.yaml
+    - file: /etc/ceilometer/gabbi_pipeline.yaml
+    - file: /etc/ceilometer/pipeline.yaml
+
+{%- endif %}
+
+
 ceilometer_server_services:
   service.running:
   - names: {{ server.services }}
