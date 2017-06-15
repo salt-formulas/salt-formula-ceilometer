@@ -2,36 +2,59 @@
 {%- from "ceilometer/map.jinja" import agent with context %}
 {%- if server.get('enabled', False) %}
 {%- set publisher = server.publisher %}
+{%- set sources = server.get('sources', {
+  'meter_source': {
+    'meters': [
+      "*",
+      "!volume.create.*",
+      "!volume.delete.*",
+      "!volume.update.*",
+      "!volume.resize.*",
+      "!volume.attach.*",
+      "!volume.detach.*",
+      "!snapshot.create.*",
+      "!snapshot.delete.*",
+      "!identity.authenticate.*",
+      "!storage.api.request"
+    ]
+  }
+}) %}
+{%- set sinks = server.get('sinks', {'meter_sink': {}}) %}
 {%- else %}
 {%- set publisher = agent.publisher %}
+{%- set sources = agent.get('sources', {'meter_source': {}}) %}
+{%- set sinks = agent.get('sinks', {'meter_sink': {}}) %}
 {%- endif %}
 ---
 sources:
-    - name: meter_source
-      interval: 60
+  {%- for source_name, source in sources.iteritems() %}
+    - name: {{ source_name }}
+      interval: {{ source.get('interval', '60') }}
       meters:
-          - "*"
-          - "!volume.create.*"
-          - "!volume.delete.*"
-          - "!volume.update.*"
-          - "!volume.resize.*"
-          - "!volume.attach.*"
-          - "!volume.detach.*"
-          - "!snapshot.create.*"
-          - "!snapshot.delete.*"
-          - "!identity.authenticate.*"
-          - "!storage.api.request"
+        {%- for meter in source.get('meters', ['*']) %}
+          - "{{ meter }}"
+        {%- endfor %}
       sinks:
-          - meter_sink
+        {%- for sink in source.get('sinks', ['meter_sink']) %}
+          - {{ sink }}
+        {%- endfor %}
+
+  {%- endfor %}
 sinks:
-    - name: meter_sink
+  {%- for sink_name, sink in sinks.iteritems() %}
+    - name: {{ sink_name }}
       transformers:
+        {%- for transformer in sink.get('transformers', []) %}
+          - {{ transformer }}
+        {%- endfor %}
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+        {%- for publisher_name, publisher in sink.get('publishers', publisher).iteritems() %}
           {%- if publisher_name == 'default' %}
           - notifier://
           {%- endif %}
           {%- if publisher_name == 'graphite' %}
           - graphite://{{ publisher.host }}:{{ publisher.port }}
           {%- endif %}
-          {%- endfor %}
+        {%- endfor %}
+
+  {%- endfor -%}
