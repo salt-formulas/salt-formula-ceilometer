@@ -148,6 +148,46 @@ Ceilometer Graphite publisher
             host: 10.0.0.1
             port: 2003
 
+Ceilometer-agent-central pipeline customizations
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        ...
+        sources:
+          meter_source:
+            interval: 300
+            meters:
+            - '*'
+            sinks:
+            - meter_sink
+        sinks:
+          meter_sink:
+            pubishers:
+              default:
+
+Ceilometer-agent-compute pipeline customizations
+
+.. code-block:: yaml
+
+    ceilometer:
+      agent:
+        ...
+        sources:
+          meter_source:
+            interval: 300
+            meters:
+            - '*'
+            sinks:
+            - meter_sink
+        sinks:
+          meter_sink:
+            pubishers:
+              default:
+
+
+
 Ceilometer compute agent
 ------------------------
 
