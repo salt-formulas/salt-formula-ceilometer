@@ -47,15 +47,15 @@
 # packages/services, because alarming is implemented by Aodh and collector 
 # stuff is implemented by the ceilometer_collector service.
 # The ceilometer api for Ocata and newer is served by webserver.
-{%- if salt['pillar.get']('ceilometer:server:version', 'mitaka') in ['liberty', 'juno', 'kilo'] or salt['pillar.get']('ceilometer:server:version', 'ocata') in ['liberty', 'juno', 'kilo'] %}
+{%- if salt['pillar.get']('ceilometer:server:version', 'mitaka') in ['liberty', 'juno', 'kilo'] %}
 {%- do server.update({'pkgs': pkgs.basic + pkgs.collector + pkgs.alarm}) %}
 {%- do server.update({'services': services.basic + services.collector + services.alarm + services.webserved}) %}
 {%- else %}
 {%- do server.update({'pkgs': pkgs.basic + pkgs.db_drivers}) %}
-{%- if salt['pillar.get']('ceilometer:server:version', 'ocata') in ['mitaka', 'newton'] %}
+{%- if salt['pillar.get']('ceilometer:server:version', 'ocata') in ['mitaka'] %}
 {%- do server.update({'services': services.basic + services.webserved}) %}
 {%- else %}
-# Ocata version of ceilometer api is served by webserver
+# Newton and Ocata versions of ceilometer api are served by webserver
 {%- do server.update({'services': services.basic}) %}
 {%- endif %}
 {%- endif %}
