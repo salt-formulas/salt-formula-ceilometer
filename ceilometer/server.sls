@@ -89,8 +89,13 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 # for Newton and newer
 {%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
 
-/etc/apache2/sites-available/ceilometer.conf:
+ceilometer_api_apache_config:
   file.managed:
+  {%- if server.version == 'newton' %}
+  - name: /etc/apache2/sites-available/ceilometer.conf
+  {%- else %}
+  - name: /etc/apache2/sites-available/ceilometer-api.conf
+  {%- endif %}
   - source: salt://ceilometer/files/{{ server.version }}/ceilometer.apache2.conf.Debian
   - template: jinja
   - require:
@@ -98,8 +103,13 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 
 ceilometer_api_config:
   file.symlink:
+     {%- if server.version == 'newton' %}
      - name: /etc/apache2/sites-enabled/ceilometer.conf
      - target: /etc/apache2/sites-available/ceilometer.conf
+     {%- else %}
+     - name: /etc/apache2/sites-enabled/ceilometer-api.conf
+     - target: /etc/apache2/sites-available/ceilometer-api.conf
+     {%- endif %}
 
 ceilometer_apache_restart:
   service.running:
@@ -107,7 +117,7 @@ ceilometer_apache_restart:
   - name: apache2
   - watch:
     - file: /etc/ceilometer/ceilometer.conf
-    - file: /etc/apache2/sites-available/ceilometer.conf
+    - file: ceilometer_api_apache_config
     - file: /etc/ceilometer/event_definitions.yaml
     - file: /etc/ceilometer/event_pipeline.yaml
     - file: /etc/ceilometer/gabbi_pipeline.yaml
