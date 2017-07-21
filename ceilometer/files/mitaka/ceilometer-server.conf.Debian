@@ -86,6 +86,20 @@ rpc_backend = rabbit
 # option. (string value)
 #control_exchange = openstack
 
+# List of pollsters (or wildcard templates) to be used while polling
+#pollster_list =
+{%- if server.pollster_list is defined %}
+pollster_list = {{ server.pollster_list }}
+{%- endif %}
+
+# To reduce polling agent load, samples are sent to the notification
+# agent in a batch. To gain higher throughput at the cost of load set
+# this to False.
+#batch_polled_samples = True
+{%- if server.batch_polled_samples is defined %}
+batch_polled_samples = {{ server.batch_polled_samples|lower }}
+{%- endif %}
+
 [alarm]
 
 #
