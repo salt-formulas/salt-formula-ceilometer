@@ -1,0 +1,11 @@
+{%- from "ceilometer/map.jinja" import server with context %}
+{%- if server.get('enabled', False) %}
+local_plugin:
+  collectd_processes:
+    process:
+      {%- for proc in server.services %}
+      {%- set proc = 'ceilometer-polling' if proc == 'ceilometer-agent-central' else proc %}
+      {{ proc }}:
+        match: 'python.*{{ proc }}'
+      {%- endfor %}
+{%- endif %}
