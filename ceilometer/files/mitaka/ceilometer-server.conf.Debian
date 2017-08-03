@@ -665,3 +665,49 @@ os_endpoint_type={{ server.identity.get('endpoint_type', 'publicURL') }}
 # Disables X.509 certificate validation when an SSL connection
 # to Identity Service is established. (boolean value)
 #insecure=false
+
+
+[cors]
+#
+# From oslo.middleware
+#
+
+# Indicate whether this resource may be shared with the domain received in the
+# requests "origin" header. (list value)
+#allowed_origin = <None>
+{% if server.get('cors', {}).allowed_origin is defined %}
+allowed_origin = {{ server.cors.allowed_origin }}
+{% endif %}
+
+# Indicate that the actual request can include user credentials (boolean value)
+#allow_credentials = true
+{% if server.get('cors', {}).allow_credentials is defined %}
+allow_credentials = {{ server.cors.allow_credentials }}
+{% endif %}
+
+# Indicate which headers are safe to expose to the API. Defaults to HTTP Simple
+# Headers. (list value)
+#expose_headers = X-Auth-Token,X-Openstack-Request-Id,X-Subject-Token
+{% if server.get('cors', {}).expose_headers is defined %}
+expose_headers = {{ server.cors.expose_headers }}
+{% endif %}
+
+# Maximum cache age of CORS preflight requests. (integer value)
+#max_age = 3600
+{% if server.get('cors', {}).max_age is defined %}
+max_age = {{ server.cors.max_age }}
+{% endif %}
+
+
+# Indicate which methods can be used during the actual request. (list value)
+#allow_methods = GET,PUT,POST,DELETE,PATCH
+{% if server.get('cors', {}).allow_methods is defined %}
+allow_methods = {{ server.cors.allow_methods }}
+{% endif %}
+
+# Indicate which header field names may be used during the actual request.
+# (list value)
+#allow_headers = X-Auth-Token,X-Openstack-Request-Id,X-Subject-Token,X-Project-Id,X-Project-Name,X-Project-Domain-Id,X-Project-Domain-Name,X-Domain-Id,X-Domain-Name
+{% if server.get('cors', {}).allow_headers is defined %}
+allow_headers = {{ server.cors.allow_headers }}
+{% endif %}

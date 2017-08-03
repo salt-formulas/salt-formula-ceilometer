@@ -614,23 +614,41 @@ transport_url = rabbit://{{ server.message_queue.user }}:{{ server.message_queue
 # requests "origin" header. Format: "<protocol>://<host>[:<port>]", no trailing
 # slash. Example: https://horizon.example.com (list value)
 #allowed_origin = <None>
+{% if server.get('cors', {}).allowed_origin is defined %}
+allowed_origin = {{ server.cors.allowed_origin }}
+{% endif %}
 
 # Indicate that the actual request can include user credentials (boolean value)
 #allow_credentials = true
+{% if server.get('cors', {}).allow_credentials is defined %}
+allow_credentials = {{ server.cors.allow_credentials }}
+{% endif %}
 
 # Indicate which headers are safe to expose to the API. Defaults to HTTP Simple
 # Headers. (list value)
 #expose_headers = X-Auth-Token,X-Subject-Token,X-Service-Token,X-Openstack-Request-Id
+{% if server.get('cors', {}).expose_headers is defined %}
+expose_headers = {{ server.cors.expose_headers }}
+{% endif %}
 
 # Maximum cache age of CORS preflight requests. (integer value)
 #max_age = 3600
+{% if server.get('cors', {}).max_age is defined %}
+max_age = {{ server.cors.max_age }}
+{% endif %}
 
 # Indicate which methods can be used during the actual request. (list value)
 #allow_methods = GET,PUT,POST,DELETE,PATCH
+{% if server.get('cors', {}).allow_methods is defined %}
+allow_methods = {{ server.cors.allow_methods }}
+{% endif %}
 
 # Indicate which header field names may be used during the actual request.
 # (list value)
 #allow_headers = X-Auth-Token,X-Identity-Status,X-Roles,X-Service-Catalog,X-User-Id,X-Tenant-Id,X-Openstack-Request-Id
+{% if server.get('cors', {}).allow_headers is defined %}
+allow_headers = {{ server.cors.allow_headers }}
+{% endif %}
 
 
 [cors.subdomain]
