@@ -2,7 +2,7 @@
 Listen {{ server.bind.host }}:{{ server.bind.port }}
 
 <VirtualHost *:{{ server.bind.port }}>
-    WSGIDaemonProcess ceilometer-api processes=2 threads=10 user=ceilometer display-name=%{GROUP}
+    WSGIDaemonProcess ceilometer-api processes=2 threads=10 user=ceilometer group=ceilometer display-name=%{GROUP}
     WSGIProcessGroup ceilometer-api
     WSGIScriptAlias / /usr/share/ceilometer/app.wsgi
     WSGIApplicationGroup %{GLOBAL}
