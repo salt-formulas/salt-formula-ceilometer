@@ -12,6 +12,81 @@ ceilometer_server_packages:
   - require:
     - pkg: ceilometer_server_packages
 
+{%- for service_name in server.services %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://ceilometer/files/default
+    - template: jinja
+    - require:
+      - pkg: ceilometer_server_packages
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - watch_in:
+      - service: ceilometer_server_services
+{%- endfor %}
+
+{%- if server.logging.log_appender %}
+
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+ceilometer_server_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+ceilometer_general_logging_conf:
+  file.managed:
+    - name: /etc/ceilometer/logging.conf
+    - source: salt://ceilometer/files/logging.conf
+    - template: jinja
+    - user: ceilometer
+    - group: ceilometer
+    - require:
+      - pkg: ceilometer_server_packages
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: ceilometer_server_fluentd_logger_package
+{%- endif %}
+    - defaults:
+        service_name: ceilometer
+        values: {{ server }}
+    - watch_in:
+      - service: ceilometer_server_services
+{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
+      - service: ceilometer_apache_restart
+{%- endif %}
+
+/var/log/ceilometer/ceilometer.log:
+  file.managed:
+    - user: ceilometer
+    - group: ceilometer
+    - watch_in:
+      - service: ceilometer_server_services
+{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
+      - service: ceilometer_apache_restart
+{%- endif %}
+
+{%- for service_name in server.get('services', []) %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/ceilometer_server/logging/logging-{{ service_name }}.conf
+    - source: salt://ceilometer/files/logging.conf
+    - template: jinja
+    - require:
+      - pkg: ceilometer_server_packages
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: ceilometer_server_fluentd_logger_package
+{%- endif %}
+    - makedirs: True
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - watch_in:
+      - service: ceilometer_server_services
+{%- endfor %}
+
+{%- endif %}
+
 {%- for name, rule in server.get('policy', {}).iteritems() %}
 
 {%- if rule != None %}

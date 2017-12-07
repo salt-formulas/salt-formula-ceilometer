@@ -2,10 +2,26 @@
     'Debian': {
         'pkgs': ['ceilometer-agent-compute'],
         'services': ['ceilometer-agent-compute'],
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
     'RedHat': {
         'pkgs': ['openstack-ceilometer-compute'],
         'services': ['openstack-ceilometer-compute'],
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
 }, merge=salt['pillar.get']('ceilometer:agent')) %}
 
@@ -41,10 +57,21 @@
     },
 }) %}
 
-{%- set server = salt['grains.filter_by']({'default': {}}, merge=salt['pillar.get']('ceilometer:server')) %}
+{%- set server = salt['grains.filter_by']({
+    'default': {
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
+    }
+}, merge=salt['pillar.get']('ceilometer:server')) %}
 
-# Mitaka and newer OpenStack releases don't need collector and alarm 
-# packages/services, because alarming is implemented by Aodh and collector 
+# Mitaka and newer OpenStack releases don't need collector and alarm
+# packages/services, because alarming is implemented by Aodh and collector
 # stuff is implemented by the ceilometer_collector service.
 # The ceilometer api for Ocata and newer is served by webserver.
 {%- if salt['pillar.get']('ceilometer:server:version', 'mitaka') in ['liberty', 'juno', 'kilo'] %}
