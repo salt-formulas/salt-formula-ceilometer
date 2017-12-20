@@ -148,6 +148,8 @@ Ceilometer Graphite publisher
             host: 10.0.0.1
             port: 2003
 
+
+
 Ceilometer compute agent
 ------------------------
 
@@ -212,7 +214,48 @@ Keystone auth caching
               port: 11211
 
 
+Ceilometer pipeline customizations
+----------------------------------
 
+On the ceilometer servers, for example for services:
+- ceilometer-agent-central
+- ceilometer-agent-notification
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        ...
+        sources:
+          meter_source:
+            interval: 300
+            meters:
+            - '*'
+            sinks:
+            - meter_sink
+        sinks:
+          meter_sink:
+            pubishers:
+              default:
+
+On the compute nodes (ceilometer-agent-compute):
+
+.. code-block:: yaml
+
+    ceilometer:
+      agent:
+        ...
+        sources:
+          meter_source:
+            interval: 300
+            meters:
+            - '*'
+            sinks:
+            - meter_sink
+        sinks:
+          meter_sink:
+            pubishers:
+              default:
 
 More Information
 ================
