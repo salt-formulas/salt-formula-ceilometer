@@ -12,6 +12,52 @@ ceilometer_agent_packages:
   - require:
     - pkg: ceilometer_agent_packages
 
+{% for service_name in agent.services %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://ceilometer/files/default
+    - template: jinja
+    - require:
+      - pkg: ceilometer_agent_packages
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ agent }}
+    - watch_in:
+      - service: ceilometer_agent_services
+{% endfor %}
+
+{% if agent.logging.log_appender -%}
+
+{%- if agent.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+ceilometer_agent_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+{% for service_name in agent.services %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/ceilometer_agent/logging/logging-{{ service_name }}.conf
+    - source: salt://ceilometer/files/logging.conf
+    - template: jinja
+    - user: ceilometer
+    - group: ceilometer
+    - require:
+      - pkg: ceilometer_agent_packages
+{%- if agent.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: ceilometer_agent_fluentd_logger_package
+{%- endif %}
+    - makedirs: True
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ agent }}
+    - watch_in:
+      - service: ceilometer_agent_services
+{% endfor %}
+
+{% endif %}
+
 {%- for publisher_name, publisher in agent.get('publisher', {}).iteritems() %}
 
 {%- if publisher_name != "default" %}
