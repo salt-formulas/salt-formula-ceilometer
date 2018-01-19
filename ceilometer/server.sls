@@ -69,7 +69,7 @@ ceilometer_general_logging_conf:
 {%- for service_name in server.get('services', []) %}
 {{ service_name }}_logging_conf:
   file.managed:
-    - name: /etc/ceilometer_server/logging/logging-{{ service_name }}.conf
+    - name: /etc/ceilometer/logging/logging-{{ service_name }}.conf
     - source: salt://ceilometer/files/logging.conf
     - template: jinja
     - require:
