@@ -38,7 +38,7 @@ ceilometer_agent_fluentd_logger_package:
 {% for service_name in agent.services %}
 {{ service_name }}_logging_conf:
   file.managed:
-    - name: /etc/ceilometer_agent/logging/logging-{{ service_name }}.conf
+    - name: /etc/ceilometer/logging/logging-{{ service_name }}.conf
     - source: salt://ceilometer/files/logging.conf
     - template: jinja
     - user: ceilometer
