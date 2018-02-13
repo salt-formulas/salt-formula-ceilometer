@@ -41,7 +41,7 @@ sinks:
     - name: meter_sink
       transformers:
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+          {%- for publisher_name, publisher in publisher.items() %}
           {%- if publisher_name == 'default' %}
           - notifier://
           {%- endif %}
@@ -59,7 +59,7 @@ sinks:
                     type: "gauge"
                     scale: "100.0 / (10**9 * (resource_metadata.cpu_number or 1))"
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+          {%- for publisher_name, publisher in publisher.items() %}
           {%- if publisher_name == 'default' %}
           - notifier://
           {%- endif %}
@@ -81,7 +81,7 @@ sinks:
                         unit: "\\1/s"
                     type: "gauge"
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+          {%- for publisher_name, publisher in publisher.items() %}
           {%- if publisher_name == 'default' %}
           - notifier://
           {%- endif %}
@@ -103,7 +103,7 @@ sinks:
                         unit: "\\1/s"
                     type: "gauge"
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+          {%- for publisher_name, publisher in publisher.items() %}
           {%- if publisher_name == 'default' %}
           - notifier://
           {%- endif %}

@@ -408,7 +408,7 @@ store_events=False
 #metering_secret=change this or be hacked
 telemetry_secret={{ server.secret }}
 
-{%- for publisher_name, publisher in server.get('publisher', {}).iteritems() %}
+{%- for publisher_name, publisher in server.get('publisher', {}).items() %}
 {%- if publisher_name == 'graphite' %}
 
 graphite=ceilometer.publisher.graphite:GraphitePublisher

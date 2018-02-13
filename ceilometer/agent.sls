@@ -58,7 +58,7 @@ ceilometer_agent_fluentd_logger_package:
 
 {% endif %}
 
-{%- for publisher_name, publisher in agent.get('publisher', {}).iteritems() %}
+{%- for publisher_name, publisher in agent.get('publisher', {}).items() %}
 
 {%- if publisher_name != "default" %}
 

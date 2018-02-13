@@ -17,7 +17,7 @@ sinks:
     - name: meter_sink
       transformers:
       publishers:
-          {%- for publisher_name, publisher in publisher.iteritems() %}
+          {%- for publisher_name, publisher in publisher.items() %}
           {%- if publisher_name == 'graphite' %}
           - graphite://{{ publisher.host }}:{{ publisher.port }}
           {%- else %}
