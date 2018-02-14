@@ -87,7 +87,7 @@ ceilometer_general_logging_conf:
 
 {%- endif %}
 
-{%- for name, rule in server.get('policy', {}).iteritems() %}
+{%- for name, rule in server.get('policy', {}).items() %}
 
 {%- if rule != None %}
 rule_{{ name }}_present:
@@ -111,7 +111,7 @@ rule_{{ name }}_absent:
 
 {%- endfor %}
 
-{%- for publisher_name, publisher in server.get('publisher', {}).iteritems() %}
+{%- for publisher_name, publisher in server.get('publisher', {}).items() %}
 
 {%- if publisher_name != "default" %}
 
