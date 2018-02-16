@@ -397,7 +397,7 @@ token_cache_time = -1
 interface=internalURL
 
 {%- if agent.cache is defined %}
-memcached_agents={%- for member in agent.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
+memcached_servers={%- for member in agent.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
 {%- endif %}
 
 # Complete public Identity API endpoint. (string value)

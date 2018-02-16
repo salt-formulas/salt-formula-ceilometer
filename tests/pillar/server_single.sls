@@ -1,5 +1,6 @@
 ceilometer:
   server:
+    debug: true
     #region: RegionOne
     enabled: true
     version: mitaka

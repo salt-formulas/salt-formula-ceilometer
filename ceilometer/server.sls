@@ -190,6 +190,9 @@ ceilometer_apache_restart:
   service.running:
   - enable: true
   - name: apache2
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/ceilometer/ceilometer.conf
     - file: ceilometer_api_apache_config
@@ -200,10 +203,35 @@ ceilometer_apache_restart:
 
 {%- endif %}
 
+{%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca_ceilometer_server:
+{%- if server.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ server.message_queue.ssl.cacert_file }}
+    - contents_pillar: ceilometer:server:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+    - require_in:
+      - file: /etc/ceilometer/ceilometer.conf
+    - watch_in:
+      - ceilometer_server_services
+{%- else %}
+  file.exists:
+   - name: {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
+   - require_in:
+     - file: /etc/ceilometer/ceilometer.conf
+   - watch_in:
+      - ceilometer_server_services
+{%- endif %}
+{%- endif %}
+
 ceilometer_server_services:
   service.running:
   - names: {{ server.services }}
   - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
     - file: /etc/ceilometer/ceilometer.conf
 

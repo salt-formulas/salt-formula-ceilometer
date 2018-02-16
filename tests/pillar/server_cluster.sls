@@ -1,5 +1,6 @@
 ceilometer:
   server:
+    debug: true
     region: RegionOne
     enabled: true
     version: mitaka
@@ -32,11 +33,8 @@ ceilometer:
       engine: rabbitmq
       members:
       - host: 127.0.0.1
-        port: 5672
-      - host: 127.0.0.1
-        port: 5672
-      - host: 127.0.0.1
-        port: 5672
+      - host: 127.0.0.2
+      - host: 127.0.0.3
       user: openstack
       password: password
       virtual_host: '/openstack'
@@ -48,9 +46,9 @@ ceilometer:
         members:
         - host: 127.0.0.1
           port: 8086
-        - host: 127.0.0.1
+        - host: 127.0.0.2
           port: 8086
-        - host: 127.0.0.1
+        - host: 127.0.0.3
           port: 8086
         name: ceilometer
         user: ceilometer
@@ -58,7 +56,7 @@ ceilometer:
         database: database
       elasticsearch:
         enabled: true
-        host: 127.0.0.1
+        host: 127.0.0.4
         port: 8086
       policy:
         segregation: 'rule:context_is_admin'

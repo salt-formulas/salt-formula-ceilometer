@@ -1,5 +1,6 @@
 ceilometer:
   agent:
+    debug: true
     region: RegionOne
     enabled: true
     version: liberty
@@ -27,13 +28,10 @@ ceilometer:
       engine: rabbitmq
       members:
       - host: 127.0.0.1
-        port: 5672
-      - host: 127.0.0.1
-        port: 5672
-      - host: 127.0.0.1
-        port: 5672
+      - host: 127.0.0.2
+      - host: 127.0.0.3
       user: openstack
-      password: ${_param:rabbitmq_openstack_password}
+      password: workshop
       virtual_host: '/openstack'
       ha_queues: true
       # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715

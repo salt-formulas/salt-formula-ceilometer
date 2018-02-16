@@ -1,4 +1,12 @@
+{%- set default_params = {
+    'cacert_file': salt['grains.filter_by']({
+        'Debian': '/etc/ssl/certs/ca-certificates.crt',
+        'RedHat': '/etc/pki/tls/certs/ca-bundle.crt'
+    })}
+%}
+
 {% set agent = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'Debian': {
         'pkgs': ['ceilometer-agent-compute'],
         'services': ['ceilometer-agent-compute'],
@@ -23,7 +31,7 @@
           },
         },
     },
-}, merge=salt['pillar.get']('ceilometer:agent')) %}
+}, merge=salt['pillar.get']('ceilometer:agent', {}), base='BaseDefaults') %}
 
 # Server initialization
 
@@ -58,6 +66,7 @@
 }) %}
 
 {%- set server = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'default': {
         'logging': {
           'log_appender': false,
@@ -68,7 +77,7 @@
           },
         },
     }
-}, merge=salt['pillar.get']('ceilometer:server')) %}
+}, merge=salt['pillar.get']('ceilometer:server',{}), base='BaseDefaults') %}
 
 # Mitaka and newer OpenStack releases don't need collector and alarm
 # packages/services, because alarming is implemented by Aodh and collector

@@ -5,8 +5,9 @@ ceilometer_agent_packages:
   pkg.installed:
   - names: {{ agent.pkgs }}
 
-/etc/ceilometer/ceilometer.conf:
+ceilometer_agent_conf:
   file.managed:
+  - name: /etc/ceilometer/ceilometer.conf
   - source: salt://ceilometer/files/{{ agent.version }}/ceilometer-agent.conf.{{ grains.os_family }}
   - template: jinja
   - require:
@@ -70,8 +71,9 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 
 {%- endfor %}
 
-/etc/ceilometer/pipeline.yaml:
+ceilometer_agent_pipeline:
   file.managed:
+  - name: /etc/ceilometer/pipeline.yaml
   - source: salt://ceilometer/files/{{ agent.version }}/pipeline.yaml
   - template: jinja
   - require:
@@ -79,8 +81,9 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 
 {%- if agent.version != "kilo" %}
 
-/etc/ceilometer/event_pipeline.yaml:
+ceilometer_agent_event_pipeline:
   file.managed:
+  - name: /etc/ceilometer/event_pipeline.yaml
   - source: salt://ceilometer/files/{{ agent.version }}/event_pipeline.yaml
   - template: jinja
   - require:
@@ -90,12 +93,37 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
 
 {%- endif %}
 
+{%- if agent.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca_ceilometer_agent:
+{%- if agent.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ agent.message_queue.ssl.cacert_file }}
+    - contents_pillar: ceilometer:agent:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+    - require_in:
+      - file: ceilometer_agent_conf
+    - watch_in:
+      - ceilometer_agent_services
+{%- else %}
+  file.exists:
+   - name: {{ agent.message_queue.ssl.get('cacert_file', agent.cacert_file) }}
+   - require_in:
+     - file: ceilometer_agent_conf
+   - watch_in:
+      - ceilometer_agent_services
+{%- endif %}
+{%- endif %}
+
 ceilometer_agent_services:
   service.running:
   - names: {{ agent.services }}
   - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
   - watch:
-    - file: /etc/ceilometer/ceilometer.conf
-    - file: /etc/ceilometer/pipeline.yaml
+    - file: ceilometer_agent_conf
+    - file: ceilometer_agent_pipeline
 
 {%- endif %}

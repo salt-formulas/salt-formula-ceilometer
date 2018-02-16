@@ -1,5 +1,6 @@
 ceilometer:
   agent:
+    debug: true
     #region: RegionOne
     enabled: true
     version: liberty

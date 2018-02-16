@@ -938,7 +938,7 @@ auth_url = http://{{ agent.identity.host }}:35357
 interface = internal
 
 {%- if agent.cache is defined %}
-memcached_agents = {%- for member in agent.cache.members %}{{ member.host }}:{{ member.get('port', '11211') }}{% if not loop.last %},{% endif %}{%- endfor %}
+memcached_servers = {%- for member in agent.cache.members %}{{ member.host }}:{{ member.get('port', '11211') }}{% if not loop.last %},{% endif %}{%- endfor %}
 {%- else %}
 token_cache_time = -1
 {%- endif %}

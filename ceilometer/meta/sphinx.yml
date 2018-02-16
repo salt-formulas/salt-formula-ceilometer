@@ -36,15 +36,27 @@ doc:
         version:
           name: "Version"
           value: {{ server.version }}
+  {%- if server.get('database', False) %}
         database_engine:
           name: "Database engine"
           value: "{{ server.database.get('engine', 'mongodb') }}"
+  {%- if server.database.engine == 'mongodb' %}
         database_host:
           name: "Database"
           value: "{{ server.database.user }}@{% if server.database.host is defined %}{{ server.database.host }}{% else %}[{% for member in server.database.members %}{{ member.host }}:{{ member.get('port', '27017') }}{% if not loop.last %},{% endif %}{% endfor %}]{% endif %}:27017/{{ server.database.name }}"
-        message_queue_ip:
+  {%- endif %}
+  {%- endif %}
+        transport_url:
           name: "Message queue"
-          value: {{ server.message_queue.user }}@{{ server.message_queue.host }}:{{ server.message_queue.port }}{{ server.message_queue.virtual_host }}
+  {%- if server.message_queue.members is defined %}
+          value: rabbit://{% for member in server.message_queue.members -%}
+                             {{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ member.host }}:{{ member.get('port', 5672) }}
+                             {%- if not loop.last -%},{%- endif -%}
+                         {%- endfor -%}
+                             /{{ server.message_queue.virtual_host }}
+  {%- else %}
+          value: rabbit://{{ server.message_queue.user }}:{{ server.message_queue.password }}@{{ server.message_queue.host }}:{{ server.message_queue.port }}/{{ server.message_queue.virtual_host }}
+  {%- endif %}
         identity_host:
           name: "Identity service"
           value: {{ server.identity.user }}@{{ server.identity.host }}:{{ server.identity.port }}

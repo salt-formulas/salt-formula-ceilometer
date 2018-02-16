@@ -15,18 +15,23 @@ provisioner:
   grains:
     noservices: True
   dependencies:
-    - name: keystone
+    - name: linux
       repo: git
-      source: https://github.com/salt-formulas/salt-formula-keystone
+      source: https://github.com/salt-formulas/salt-formula-linux
   state_top:
     base:
       "*":
+        - linux.system
         - ceilometer
   pillars:
     top.sls:
       base:
         "*":
+          - linux_repo_openstack
           - ceilometer
+          - release
+  pillars-from-files:
+    linux_repo_openstack.sls: tests/pillar/repo_mcp_openstack_<%= ENV['OS_VERSION'] || 'pike' %>.sls
 
 verifier:
   name: inspec
@@ -44,19 +49,92 @@ suites:
     provisioner:
       pillars-from-files:
         ceilometer.sls: tests/pillar/agent_cluster.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            agent:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
 
   - name: agent_single
     provisioner:
       pillars-from-files:
         ceilometer.sls: tests/pillar/agent_single.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            agent:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
 
   - name: server_cluster
     provisioner:
       pillars-from-files:
         ceilometer.sls: tests/pillar/server_cluster.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            server:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
 
   - name: server_single
     provisioner:
       pillars-from-files:
         ceilometer.sls: tests/pillar/server_single.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            server:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
+
+  - name: server_cluster_ssl
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/server_cluster.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            server:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
+        ssl.sls:
+          ceilometer:
+            server:
+              identity:
+                protocol: https
+              message_queue:
+                port: 5671
+                ssl:
+                  enabled: True
+        top.sls:
+          base:
+            "*":
+              - linux_repo_openstack
+              - ceilometer
+              - release
+              - ssl
+
+  - name: agent_cluster_ssl
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/agent_cluster.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            agent:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
+        ssl.sls:
+          ceilometer:
+            agent:
+              identity:
+                protocol: https
+              message_queue:
+                port: 5671
+                ssl:
+                  enabled: True
+        top.sls:
+          base:
+            "*":
+              - linux_repo_openstack
+              - ceilometer
+              - release
+              - ssl
+
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125
