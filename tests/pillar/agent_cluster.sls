@@ -14,6 +14,15 @@ ceilometer:
       user: ceilometer
       password: password
       endpoint_type: internalURL
+    logging:
+      log_appender: false
+      log_handlers:
+        watchedfile:
+          enabled: true
+        fluentd:
+          enabled: false
+        ossyslog:
+          enabled: false
     message_queue:
       engine: rabbitmq
       members:
