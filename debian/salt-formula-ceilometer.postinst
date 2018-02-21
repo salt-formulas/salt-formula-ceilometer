@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+dpkg-maintscript-helper symlink_to_dir \
+        /usr/share/salt-formulas/env/ceilometer/files/pike /usr/share/salt-formulas/env/ceilometer/files/ocata salt-formula-ceilometer -- "$@"
+
+#DEBHELPER#
+
+exit 0
