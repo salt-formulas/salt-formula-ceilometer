@@ -61,7 +61,7 @@ ceilometer_agent_fluentd_logger_package:
 
 {%- for publisher_name, publisher in agent.get('publisher', {}).items() %}
 
-{%- if publisher_name != "default" %}
+{%- if publisher_name not in ['default', 'gnocchi', 'panko'] %}
 
 ceilometer_publisher_{{ publisher_name }}_pkg:
   pkg.latest:
@@ -79,7 +79,7 @@ ceilometer_agent_pipeline:
   - require:
     - pkg: ceilometer_agent_packages
 
-{%- if agent.version != "kilo" %}
+{%- if agent.version != 'kilo' %}
 
 ceilometer_agent_event_pipeline:
   file.managed:
@@ -113,6 +113,21 @@ rabbitmq_ca_ceilometer_agent:
    - watch_in:
       - ceilometer_agent_services
 {%- endif %}
+{%- endif %}
+
+{# Starting Pike switch to polling.yaml to handle meters polling as recommended in upstream #}
+{%- if agent.version not in ['liberty', 'juno', 'kilo', 'mitaka', 'newton', 'ocata'] and agent.polling is defined %}
+
+ceilometer_agent_polling:
+  file.managed:
+  - name: /etc/ceilometer/polling.yaml
+  - source: salt://ceilometer/files/{{ agent.version }}/polling.yaml
+  - template: jinja
+  - require:
+    - pkg: ceilometer_agent_packages
+  - watch_in:
+    - service: ceilometer_agent_services
+
 {%- endif %}
 
 ceilometer_agent_services:

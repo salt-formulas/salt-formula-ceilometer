@@ -1,0 +1,8 @@
+parameters:
+  ceilometer:
+    server:
+      publisher:
+        panko:
+          enabled: true
+          url: panko://
+          publish_event: true

@@ -113,12 +113,41 @@ rule_{{ name }}_absent:
 
 {%- for publisher_name, publisher in server.get('publisher', {}).items() %}
 
-{%- if publisher_name != "default" %}
+{%- if publisher_name not in ['default', 'gnocchi', 'panko'] %}
 
 ceilometer_publisher_{{ publisher_name }}_pkg:
   pkg.latest:
     - name: ceilometer-publisher-{{ publisher_name }}
 
+{%- endif %}
+
+{%- if publisher_name == 'gnocchi' and publisher.enabled == true %}
+
+ceilometer_gnocchiclient_pkg:
+  pkg.latest:
+    - name: python-gnocchiclient
+
+{%- if publisher.create_resources %}
+
+ceilometer_server_gnocchi_resources:
+  file.managed:
+  - name: /etc/ceilometer/gnocchi_resources.yaml
+  - source: salt://ceilometer/files/{{ server.version }}/gnocchi_resources.yaml
+  - template: jinja
+  - require:
+    - pkg: ceilometer_server_packages
+    - pkg: ceilometer_gnocchiclient_pkg
+
+ceilometer_upgrade:
+  cmd.run:
+    - name: ceilometer-upgrade --skip-metering-database
+    {%- if grains.get('noservices') %}
+    - onlyif: /bin/false
+    {%- endif %}
+    - onchanges:
+      - ceilometer_server_gnocchi_resources
+
+{%- endif %}
 {%- endif %}
 
 {%- endfor %}

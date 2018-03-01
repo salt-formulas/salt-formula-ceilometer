@@ -7,6 +7,7 @@ ceilometer:
     secret: password
     publisher:
       default:
+        enabled: true
     identity:
       engine: keystone
       host: 127.0.0.1

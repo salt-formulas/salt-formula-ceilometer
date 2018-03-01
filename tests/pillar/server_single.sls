@@ -8,6 +8,7 @@ ceilometer:
     ttl: 86400
     publisher:
       default:
+        enabled: true
     bind:
       host: 127.0.0.1
       port: 8777

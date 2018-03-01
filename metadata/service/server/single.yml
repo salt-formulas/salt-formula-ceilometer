@@ -16,6 +16,9 @@ parameters:
       ttl: 86400
       publisher:
         default:
+          enabled: true
+          publish_event: true
+          publish_metric: true
       bind:
         host: ${_param:single_address}
         port: 8777

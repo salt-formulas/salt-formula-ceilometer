@@ -14,7 +14,6 @@ debug = {{ server.debug }}
 log_config_append=/etc/ceilometer/logging.conf
 {%- endif %}
 
-
 {%- if server.message_queue.rpc_thread_pool_size is defined %}
 executor_thread_pool_size = {{ server.message_queue.rpc_thread_pool_size }}
 {%- endif %}
@@ -111,6 +110,27 @@ connection={{ server.database.engine }}://{{ server.database.user }}:{{ server.d
 {%- else %}
 connection={{ server.database.engine }}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}:{{ server.database.port }}/{{ server.database.name }}
 {%- endif %}
+{%- endif %}
+{%- endif %}
+
+
+{%- if server.get('publisher', {}).get('gnocchi', {}).get('enabled', False) %}
+[dispatcher_gnocchi]
+
+{%- if server.publisher.gnocchi.filter_project is defined %}
+filter_project = {{ server.publisher.gnocchi.filter_project }}
+{%- endif %}
+
+{%- if server.publisher.gnocchi.archive_policy is defined %}
+archive_policy = {{ server.publisher.gnocchi.archive_policy }}
+{%- endif %}
+
+{%- if server.publisher.gnocchi.resources_definition_file is defined %}
+resources_definition_file = {{ server.publisher.gnocchi.resources_definition_file }}
+{%- endif %}
+
+{%- if server.publisher.gnocchi.request_timeout is defined %}
+request_timeout = {{ server.publisher.gnocchi.request_timeout }}
 {%- endif %}
 {%- endif %}
 

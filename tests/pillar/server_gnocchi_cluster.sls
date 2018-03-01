@@ -1,24 +1,27 @@
 ceilometer:
-  agent:
-    polling:
-      sources:
-        my_pollsters:
-          meters:
-            - "test_meter1"
-            - "regex_meters*"
-          interval: 30
-        all_pollsters:
-          meters:
-            - "*"
-          interval: 100
+  server:
     debug: true
     region: RegionOne
     enabled: true
-    version: liberty
+    version: pike
+    cluster: true
     secret: password
+    ttl: 86400
     publisher:
       default:
+        enabled: false
+      gnocchi:
         enabled: true
+        url: gnocchi://
+        publish_metric: true
+        archive_policy: high
+        filter_project: project
+        create_resources: true
+        resources_definition_file: gnocchi_resources.yaml
+        request_timeout: 11.0
+    bind:
+      host: 127.0.0.1
+      port: 8777
     identity:
       engine: keystone
       host: 127.0.0.1
@@ -27,24 +30,16 @@ ceilometer:
       user: ceilometer
       password: password
       endpoint_type: internalURL
-    logging:
-      log_appender: false
-      log_handlers:
-        watchedfile:
-          enabled: true
-        fluentd:
-          enabled: false
-        ossyslog:
-          enabled: false
     message_queue:
       engine: rabbitmq
       members:
       - host: 127.0.0.1
-      - host: 127.0.0.2
-      - host: 127.0.0.3
+      - host: 127.0.0.1
+      - host: 127.0.0.1
       user: openstack
-      password: workshop
+      password: password
       virtual_host: '/openstack'
-      ha_queues: true
       # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715
       rpc_thread_pool_size: 5
+    database:
+      engine: gnocchi
