@@ -229,6 +229,14 @@ ceilometer_apache_restart:
     - file: /etc/ceilometer/event_pipeline.yaml
     - file: /etc/ceilometer/gabbi_pipeline.yaml
     - file: /etc/ceilometer/pipeline.yaml
+  # ceilometer-upgrade requires operational Gnocchi service API,
+  # which can be run on the same node as Ceilometer under apache,
+  # the command is executed only when Gnocchi is enabled.
+  {%- set gnocchi_publisher = server.get('publisher', {}).get('gnocchi', {}) %}
+  {%- if gnocchi_publisher.get('create_resources', False) and gnocchi_publisher.get('enabled', False) %}
+  - require:
+    - ceilometer_upgrade
+  {%- endif %}
 
 {%- endif %}
 
