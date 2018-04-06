@@ -157,7 +157,8 @@ salt_run() {
 prepare() {
     [ -d ${BUILDDIR} ] && mkdir -p ${BUILDDIR}
 
-    [[ ! -f "${VENV_DIR}/bin/activate" ]] && setup_virtualenv
+    # On ci salt is preinstalled from packages, so use it if present
+    which salt-call || setup_virtualenv
     setup_mock_bin
     setup_pillar
     setup_salt

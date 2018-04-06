@@ -50,6 +50,20 @@ token_cache_time = -1
 
 topics = notifications
 
+[oslo_messaging_rabbit]
+
+{%- if agent.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbit_use_ssl=true
+
+{%- if agent.message_queue.ssl.version is defined %}
+kombu_ssl_version = {{ agent.message_queue.ssl.version }}
+{%- elif salt['grains.get']('pythonversion') > [2,7,8] %}
+kombu_ssl_version = TLSv1_2
+{%- endif %}
+
+kombu_ssl_ca_certs = {{ agent.message_queue.ssl.get('cacert_file', agent.cacert_file) }}
+{%- endif %}
+
 [service_credentials]
 
 auth_type = password

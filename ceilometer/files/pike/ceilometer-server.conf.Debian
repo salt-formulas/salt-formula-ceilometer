@@ -160,6 +160,20 @@ token_cache_time = -1
 
 topics = notifications
 
+[oslo_messaging_rabbit]
+
+{%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbit_use_ssl=true
+
+{%- if server.message_queue.ssl.version is defined %}
+kombu_ssl_version = {{ server.message_queue.ssl.version }}
+{%- elif salt['grains.get']('pythonversion') > [2,7,8] %}
+kombu_ssl_version = TLSv1_2
+{%- endif %}
+
+kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
+{%- endif %}
+
 [publisher]
 
 {%- if server.secret is defined %}
