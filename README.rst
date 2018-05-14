@@ -250,6 +250,25 @@ Also it is possible to configure this with pillar:
           ossyslog:
             enabled: true
 
+The log level might be configured per logger by using the
+following pillar structure:
+
+.. code-block:: yaml
+
+  ceilometer:
+    server:
+      logging:
+        loggers:
+          <logger_name>:
+            level: WARNING
+
+  ceilometer:
+    agent:
+      logging:
+        loggers:
+          <logger_name>:
+            level: WARNING
+
 
 More Information
 ================
