@@ -148,6 +148,22 @@ Ceilometer Graphite publisher
             host: 10.0.0.1
             port: 2003
 
+Since Pike release in order to install package for publisher, publisher definition should
+have pkg field explicitly set to needed package:
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        enabled: true
+        publisher:
+          example_publisher:
+            enabled: true
+            url: publisher_url://
+            pkg: publisher-pkg-name
+
+
+
 Ceilometer compute agent
 ------------------------
 

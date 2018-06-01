@@ -113,6 +113,7 @@ rule_{{ name }}_absent:
 
 {%- for publisher_name, publisher in server.get('publisher', {}).items() %}
 
+{%- if server.version in ['liberty', 'juno', 'kilo', 'mitaka', 'newton', 'ocata'] %}
 {%- if publisher_name not in ['default', 'gnocchi', 'panko'] %}
 
 ceilometer_publisher_{{ publisher_name }}_pkg:
@@ -120,8 +121,16 @@ ceilometer_publisher_{{ publisher_name }}_pkg:
     - name: ceilometer-publisher-{{ publisher_name }}
 
 {%- endif %}
+{%- elif publisher.get('enabled', False) %}
+{%- if publisher.pkg is defined %}
 
-{%- if publisher_name == 'gnocchi' and publisher.enabled == true %}
+ceilometer_publisher_{{ publisher_name }}_pkg:
+  pkg.latest:
+    - name: {{ publisher.pkg }}
+
+{%- endif %}
+
+{%- if publisher_name == 'gnocchi' %}
 
 ceilometer_gnocchiclient_pkg:
   pkg.latest:
@@ -147,6 +156,7 @@ ceilometer_upgrade:
     - onchanges:
       - ceilometer_server_gnocchi_resources
 
+{%- endif %}
 {%- endif %}
 {%- endif %}
 

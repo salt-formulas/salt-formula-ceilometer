@@ -61,12 +61,22 @@ ceilometer_agent_fluentd_logger_package:
 
 {%- for publisher_name, publisher in agent.get('publisher', {}).items() %}
 
+{%- if agent.version in ['liberty', 'juno', 'kilo', 'mitaka', 'newton', 'ocata'] %}
 {%- if publisher_name not in ['default', 'gnocchi', 'panko'] %}
 
 ceilometer_publisher_{{ publisher_name }}_pkg:
   pkg.latest:
     - name: ceilometer-publisher-{{ publisher_name }}
 
+{%- endif %}
+{%- elif publisher.get('enabled', False) %}
+{%- if publisher.pkg is defined %}
+
+ceilometer_publisher_{{ publisher_name }}_pkg:
+  pkg.latest:
+    - name: {{ publisher.pkg }}
+
+{%- endif %}
 {%- endif %}
 
 {%- endfor %}
