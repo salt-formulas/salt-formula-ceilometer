@@ -10,6 +10,9 @@
     'Debian': {
         'pkgs': ['ceilometer-agent-compute'],
         'services': ['ceilometer-agent-compute'],
+        'notification': {
+          'topics': 'notifications'
+        },
         'logging': {
           'log_appender': false,
           'log_handlers': {
@@ -22,6 +25,9 @@
     'RedHat': {
         'pkgs': ['openstack-ceilometer-compute'],
         'services': ['openstack-ceilometer-compute'],
+        'notification': {
+          'topics': 'notifications'
+        },
         'logging': {
           'log_appender': false,
           'log_handlers': {
@@ -68,6 +74,9 @@
 {%- set server = salt['grains.filter_by']({
     'BaseDefaults': default_params,
     'default': {
+        'notification': {
+          'topics': 'notifications'
+        },
         'logging': {
           'log_appender': false,
           'log_handlers': {

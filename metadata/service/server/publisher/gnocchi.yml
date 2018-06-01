@@ -8,8 +8,9 @@ parameters:
       publisher:
         gnocchi:
           enabled: true
-          url: gnocchi://
+          url: gnocchi://?archive_policy=${_param:ceilometer_gnocchi_archive_policy}&filter_project=${_param:ceilometer_gnocchi_filter_project}
           publish_metric: true
+          # archive_policy and filter_project are deprecated since queens
           archive_policy: ${_param:ceilometer_gnocchi_archive_policy}
           filter_project: ${_param:ceilometer_gnocchi_filter_project}
           create_resources: ${_param:ceilometer_create_gnocchi_resources}
