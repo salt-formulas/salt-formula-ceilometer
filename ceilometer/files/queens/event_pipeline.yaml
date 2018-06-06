@@ -1,0 +1,29 @@
+{%- from "ceilometer/map.jinja" import server with context %}
+{%- from "ceilometer/map.jinja" import agent with context %}
+{%- if server.get('enabled', False) %}
+{%- set publisher = server.publisher %}
+{%- else %}
+{%- set publisher = agent.publisher %}
+{%- endif %}
+{%- set publisher_lst = [] %}
+{%- for k, v in publisher.items() %}
+{%- if v.get('enabled', False) and v.get('publish_event', False) %}
+{%- if k == 'default' %}
+{%- do publisher_lst.append( '- direct://' ) %}
+{%- else %}
+{%- do publisher_lst.append( '- ' + v.url ) %}
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+---
+sources:
+    - name: event_source
+      events:
+          - "*"
+      sinks:
+          - event_sink
+sinks:
+    - name: event_sink
+      transformers:
+      publishers:
+          {{ '\n'.join(publisher_lst) }}

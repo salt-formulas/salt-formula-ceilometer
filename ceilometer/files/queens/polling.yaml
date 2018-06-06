@@ -1,0 +1,11 @@
+{%- from "ceilometer/map.jinja" import agent with context %}
+---
+sources:
+{%- for source_name, source in agent.polling.sources.items() %}
+    - name: {{ source_name }}
+      interval: {{ source.get('interval', 300) }}
+      meters:
+        {%- for meter in source.meters %}
+        - "{{ meter }}"
+        {%- endfor %}
+{%- endfor %}

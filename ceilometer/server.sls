@@ -52,7 +52,7 @@ ceilometer_general_logging_conf:
         values: {{ server }}
     - watch_in:
       - service: ceilometer_server_services
-{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
+{%- if server.version in  ['newton', 'ocata', 'pike'] %}
       - service: ceilometer_apache_restart
 {%- endif %}
 
@@ -62,7 +62,7 @@ ceilometer_general_logging_conf:
     - group: ceilometer
     - watch_in:
       - service: ceilometer_server_services
-{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
+{%- if server.version in  ['newton', 'ocata', 'pike'] %}
       - service: ceilometer_apache_restart
 {%- endif %}
 
@@ -149,7 +149,7 @@ ceilometer_server_gnocchi_resources:
 
 ceilometer_upgrade:
   cmd.run:
-    - name: ceilometer-upgrade --skip-metering-database
+    - name: ceilometer-upgrade
     {%- if grains.get('noservices') %}
     - onlyif: /bin/false
     {%- endif %}
@@ -201,7 +201,7 @@ ceilometer_upgrade:
 {%- endif %}
 
 # for Newton and newer
-{%- if server.version not in ['liberty', 'juno', 'kilo', 'mitaka'] %}
+{%- if server.version in ['newton', 'ocata', 'pike'] %}
 
 ceilometer_api_apache_config:
   file.managed:

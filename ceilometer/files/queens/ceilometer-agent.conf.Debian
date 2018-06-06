@@ -1,0 +1,481 @@
+{%- from "ceilometer/map.jinja" import agent with context -%}
+
+[DEFAULT]
+
+{%- set _data = agent.message_queue %}
+{%- include "oslo_templates/files/queens/oslo/messaging/_default.conf" %}
+
+{%- set _data = agent.logging %}
+{%- include "oslo_templates/files/queens/oslo/_log.conf" %}
+
+#
+# From ceilometer
+#
+
+# To reduce polling agent load, samples are sent to the notification agent in a
+# batch. To gain higher throughput at the cost of load set this to False.
+# (boolean value)
+#batch_polled_samples = true
+{%- if agent.batch_polled_samples is defined %}
+batch_polled_samples = {{ agent.batch_polled_samples|lower }}
+{%- endif %}
+
+# Inspector to use for inspecting the hypervisor layer. Known inspectors are
+# libvirt, hyperv, vsphere and xenapi. (string value)
+#hypervisor_inspector = libvirt
+
+# Libvirt domain type. (string value)
+# Possible values:
+# kvm - <No description provided>
+# lxc - <No description provided>
+# qemu - <No description provided>
+# uml - <No description provided>
+# xen - <No description provided>
+#libvirt_type = kvm
+
+# Override the default libvirt URI (which is dependent on libvirt_type).
+# (string value)
+#libvirt_uri =
+
+# Swift reseller prefix. Must be on par with reseller_prefix in proxy-
+# agent.conf. (string value)
+#reseller_prefix = AUTH_
+
+# Configuration file for pipeline definition. (string value)
+#pipeline_cfg_file = pipeline.yaml
+
+# Configuration file for event pipeline definition. (string value)
+#event_pipeline_cfg_file = event_pipeline.yaml
+
+# Source for samples emitted on this instance. (string value)
+#sample_source = openstack
+
+# List of metadata prefixes reserved for metering use. (list value)
+#reserved_metadata_namespace = metering.
+
+# Limit on length of reserved metadata values. (integer value)
+#reserved_metadata_length = 256
+
+# List of metadata keys reserved for metering use. And these keys are
+# additional to the ones included in the namespace. (list value)
+#reserved_metadata_keys =
+
+# Path to the rootwrap configuration file to use for running commands as root
+# (string value)
+#rootwrap_config = /etc/ceilometer/rootwrap.conf
+
+# Name of this node, which must be valid in an AMQP key. Can be an opaque
+# identifier. For ZeroMQ only, must be a valid host name, FQDN, or IP address.
+# (host address value)
+#host = <your_hostname>
+
+# Timeout seconds for HTTP requests. Set it to None to disable timeout.
+# (integer value)
+#http_timeout = 600
+
+# Maximum number of parallel requests for services to handle at the same time.
+# (integer value)
+# Minimum value: 1
+#max_parallel_requests = 64
+
+
+[compute]
+
+#
+# From ceilometer
+#
+
+# Ceilometer offers many methods to discover the instance running on a compute
+# node:
+# * naive: poll nova to get all instances
+# * workload_partitioning: poll nova to get instances of the compute
+# * libvirt_metadata: get instances from libvirt metadata   but without
+# instance metadata (recommended for Gnocchi   backend (string value)
+# Possible values:
+# naive - <No description provided>
+# workload_partitioning - <No description provided>
+# libvirt_metadata - <No description provided>
+#instance_discovery_method = libvirt_metadata
+instance_discovery_method = {{ agent.get('discovery_method', 'libvirt_metadata') }}
+
+# New instances will be discovered periodically based on this option (in
+# seconds). By default, the agent discovers instances according to pipeline
+# polling interval. If option is greater than 0, the instance list to poll will
+# be updated based on this option's interval. Measurements relating to the
+# instances will match intervals defined in pipeline. This option is only used
+# for agent polling to Nova API, so it will work only when
+# 'instance_discovery_method' is set to 'naive'. (integer value)
+# Minimum value: 0
+#resource_update_interval = 0
+
+# The expiry to totally refresh the instances resource cache, since the
+# instance may be migrated to another host, we need to clean the legacy
+# instances info in local cache by totally refreshing the local cache. The
+# minimum should be the value of the config option of resource_update_interval.
+# This option is only used for agent polling to Nova API, so it will work only
+# when 'instance_discovery_method' is set to 'naive'. (integer value)
+# Minimum value: 0
+#resource_cache_expiry = 3600
+
+
+[event]
+
+#
+# From ceilometer
+#
+
+# Configuration file for event definitions. (string value)
+#definitions_cfg_file = event_definitions.yaml
+
+# Drop notifications if no event definition matches. (Otherwise, we convert
+# them with just the default traits) (boolean value)
+#drop_unmatched_notifications = false
+
+# Store the raw notification for select priority levels (info and/or error). By
+# default, raw details are not captured. (multi valued)
+#store_raw =
+
+
+[hardware]
+
+#
+# From ceilometer
+#
+
+# URL scheme to use for hardware nodes. (string value)
+#url_scheme = snmp://
+
+# SNMPd user name of all nodes running in the cloud. (string value)
+#readonly_user_name = ro_snmp_user
+
+# SNMPd v3 authentication password of all the nodes running in the cloud.
+# (string value)
+#readonly_user_password = password
+
+# SNMPd v3 authentication algorithm of all the nodes running in the cloud
+# (string value)
+# Possible values:
+# md5 - <No description provided>
+# sha - <No description provided>
+#readonly_user_auth_proto = <None>
+
+# SNMPd v3 encryption algorithm of all the nodes running in the cloud (string
+# value)
+# Possible values:
+# des - <No description provided>
+# aes128 - <No description provided>
+# 3des - <No description provided>
+# aes192 - <No description provided>
+# aes256 - <No description provided>
+#readonly_user_priv_proto = <None>
+
+# SNMPd v3 encryption password of all the nodes running in the cloud. (string
+# value)
+#readonly_user_priv_password = <None>
+
+# Name of the control plane Tripleo network (string value)
+#tripleo_network_name = ctlplane
+
+# Configuration file for defining hardware snmp meters. (string value)
+#meter_definitions_file = snmp.yaml
+
+
+[ipmi]
+
+#
+# From ceilometer
+#
+
+# Number of retries upon Intel Node Manager initialization failure (integer
+# value)
+#node_manager_init_retry = 3
+
+# Tolerance of IPMI/NM polling failures before disable this pollster. Negative
+# indicates retrying forever. (integer value)
+#polling_retry = 3
+
+
+[meter]
+
+#
+# From ceilometer
+#
+
+# DEPRECATED: Configuration file for defining meter notifications. This option
+# is deprecated and use meter_definitions_dirs to configure meter notification
+# file. Meter definitions configuration file will be sought according to the
+# parameter. (string value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+#meter_definitions_cfg_file = <None>
+
+# List directory to find files of defining meter notifications. (multi valued)
+#meter_definitions_dirs = /etc/ceilometer/meters.d
+#meter_definitions_dirs = /usr/src/git/ceilometer/ceilometer/data/meters.d
+
+
+[notification]
+
+#
+# From ceilometer
+#
+
+# DEPRECATED: Number of queues to parallelize workload across. This value
+# should be larger than the number of active notification agents for optimal
+# results. WARNING: Once set, lowering this value may result in lost data.
+# (integer value)
+# Minimum value: 1
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+#pipeline_processing_queues = 10
+
+# Acknowledge message when event persistence fails. (boolean value)
+#ack_on_event_error = true
+
+# DEPRECATED: Enable workload partitioning, allowing multiple notification
+# agents to be run simultaneously. (boolean value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+#workload_partitioning = false
+
+# Messaging URLs to listen for notifications. Example:
+# rabbit://user:pass@host1:port1[,user:pass@hostN:portN]/virtual_host
+# (DEFAULT/transport_url is used if empty). This is useful when you have
+# dedicate messaging nodes for each service, for example, all nova
+# notifications go to rabbit-nova:5672, while all cinder notifications go to
+# rabbit-cinder:5672. (multi valued)
+#messaging_urls =
+
+# Number of notification messages to wait before publishing them. Batching is
+# advised when transformations are applied in pipeline. (integer value)
+# Minimum value: 1
+#batch_size = 100
+
+# Number of seconds to wait before publishing samples when batch_size is not
+# reached (None means indefinitely) (integer value)
+#batch_timeout = 5
+
+# Number of workers for notification service, default value is 1. (integer
+# value)
+# Minimum value: 1
+# Deprecated group/name - [DEFAULT]/notification_workers
+#workers = 1
+
+# Select which pipeline managers to enable to  generate data (multi valued)
+#pipelines = meter
+#pipelines = event
+
+# Exchanges name to listen for notifications. (multi valued)
+# Deprecated group/name - [DEFAULT]/http_control_exchanges
+#notification_control_exchanges = nova
+#notification_control_exchanges = glance
+#notification_control_exchanges = neutron
+#notification_control_exchanges = cinder
+#notification_control_exchanges = heat
+#notification_control_exchanges = keystone
+#notification_control_exchanges = sahara
+#notification_control_exchanges = trove
+#notification_control_exchanges = zaqar
+#notification_control_exchanges = swift
+#notification_control_exchanges = ceilometer
+#notification_control_exchanges = magnum
+#notification_control_exchanges = dns
+#notification_control_exchanges = ironic
+#notification_control_exchanges = aodh
+
+
+[polling]
+
+#
+# From ceilometer
+#
+
+# Configuration file for polling definition. (string value)
+#cfg_file = polling.yaml
+
+# Work-load partitioning group prefix. Use only if you want to run multiple
+# polling agents with different config files. For each sub-group of the agent
+# pool with the same partitioning_group_prefix a disjoint subset of pollsters
+# should be loaded. (string value)
+#partitioning_group_prefix = <None>
+
+
+[publisher]
+
+#
+# From ceilometer
+#
+
+# Secret value for signing messages. Set value empty if signing is not required
+# to avoid computational overhead. (string value)
+# Deprecated group/name - [DEFAULT]/metering_secret
+# Deprecated group/name - [publisher_rpc]/metering_secret
+# Deprecated group/name - [publisher]/metering_secret
+#telemetry_secret = change this for valid signing
+{%- if agent.secret is defined %}
+telemetry_secret={{ agent.secret }}
+{%- endif %}
+
+
+[publisher_notifier]
+
+#
+# From ceilometer
+#
+
+# The topic that ceilometer uses for metering notifications. (string value)
+#metering_topic = metering
+
+# The topic that ceilometer uses for event notifications. (string value)
+#event_topic = event
+
+# The driver that ceilometer uses for metering notifications. (string value)
+# Deprecated group/name - [publisher_notifier]/metering_driver
+#telemetry_driver = messagingv2
+
+
+[rgw_admin_credentials]
+
+#
+# From ceilometer
+#
+
+# Access key for Radosgw Admin. (string value)
+#access_key = <None>
+
+# Secret key for Radosgw Admin. (string value)
+#secret_key = <None>
+
+
+[service_credentials]
+
+#
+# From ceilometer-auth
+#
+{%- set _data = agent.identity %}
+{%- set auth_type = _data.get('auth_type', 'password') %}
+{%- include "oslo_templates/files/queens/keystoneauth/_type_" + auth_type + ".conf" %}
+
+# Type of endpoint in Identity service catalog to use for communication with
+# OpenStack services. (string value)
+# Possible values:
+# public - <No description provided>
+# internal - <No description provided>
+# admin - <No description provided>
+# auth - <No description provided>
+# publicURL - <No description provided>
+# internalURL - <No description provided>
+# adminURL - <No description provided>
+# Deprecated group/name - [service_credentials]/os_endpoint_type
+interface = internal
+
+
+[service_types]
+
+#
+# From ceilometer
+#
+
+# Glance service type. (string value)
+#glance = image
+
+# Neutron service type. (string value)
+#neutron = network
+
+# Neutron load balancer version. (string value)
+# Possible values:
+# v1 - <No description provided>
+# v2 - <No description provided>
+#neutron_lbaas_version = v2
+
+# Nova service type. (string value)
+#nova = compute
+
+# Radosgw service type. (string value)
+#radosgw = <None>
+
+# Swift service type. (string value)
+#swift = object-store
+
+# Cinder service type. (string value)
+# Deprecated group/name - [service_types]/cinderv2
+#cinder = volumev3
+
+
+[vmware]
+
+#
+# From ceilometer
+#
+
+# IP address of the VMware vSphere host. (host address value)
+#host_ip = 127.0.0.1
+
+# Port of the VMware vSphere host. (port value)
+# Minimum value: 0
+# Maximum value: 65535
+#host_port = 443
+
+# Username of VMware vSphere. (string value)
+#host_username =
+
+# Password of VMware vSphere. (string value)
+#host_password =
+
+# CA bundle file to use in verifying the vCenter server certificate. (string
+# value)
+#ca_file = <None>
+
+# If true, the vCenter server certificate is not verified. If false, then the
+# default CA truststore is used for verification. This option is ignored if
+# "ca_file" is set. (boolean value)
+#insecure = false
+
+# Number of times a VMware vSphere API may be retried. (integer value)
+#api_retry_count = 10
+
+# Sleep time in seconds for polling an ongoing async task. (floating point
+# value)
+#task_poll_interval = 0.5
+
+# Optional vim service WSDL location e.g http://<server>/vimService.wsdl.
+# Optional over-ride to default location for bug work-arounds. (string value)
+#wsdl_location = <None>
+
+
+[xenapi]
+
+#
+# From ceilometer
+#
+
+# URL for connection to XenServer/Xen Cloud Platform. (string value)
+#connection_url = <None>
+
+# Username for connection to XenServer/Xen Cloud Platform. (string value)
+#connection_username = root
+
+# Password for connection to XenServer/Xen Cloud Platform. (string value)
+#connection_password = <None>
+
+[oslo_concurrency]
+{%- if agent.concurrency is defined %}
+{%- set _data = agent.concurrency %}
+{%- include "oslo_templates/files/queens/oslo/_concurrency.conf" %}
+{%- endif %}
+
+[oslo_messaging_notifications]
+{%- set _data = agent.notification %}
+{%- include "oslo_templates/files/queens/oslo/messaging/_notifications.conf" %}
+
+{%- if agent.message_queue is defined %}
+{%- set _data = agent.message_queue %}
+{%- if _data.engine == 'rabbitmq' %}
+    {%- set messaging_engine = 'rabbit' %}
+{%- else %}
+    {%- set messaging_engine = _data.engine %}
+{%- endif %}
+[oslo_messaging_{{ messaging_engine }}]
+{%- include "oslo_templates/files/queens/oslo/messaging/_" + messaging_engine + ".conf" %}
+{%- endif %}
+
