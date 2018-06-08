@@ -9,11 +9,11 @@
 {%- for k, v in publisher.items() %}
 {%- if v.get('enabled', False) and v.get('publish_metric', False) %}
 {%- if k == 'default' %}
-{%- do publisher_lst.append( '- notifier://' ) %}
+{%- do publisher_lst.append( 'notifier://' ) %}
 {%- elif k == 'graphite' %}
-{%- do publisher_lst.append( '- graphite://' + v.host + ':' + v.port ) %}
+{%- do publisher_lst.append( 'graphite://' + v.host + ':' + v.port ) %}
 {%- else %}
-{%- do publisher_lst.append( '- ' + v.url ) %}
+{%- do publisher_lst.append( v.url ) %}
 {%- endif %}
 {%- endif %}
 {%- endfor %}
@@ -54,7 +54,7 @@ sinks:
     - name: meter_sink
       transformers:
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}
     - name: cpu_sink
       transformers:
           - name: "rate_of_change"
@@ -66,7 +66,7 @@ sinks:
                     max: 100
                     scale: "100.0 / (10**9 * (resource_metadata.cpu_number or 1))"
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}
     - name: cpu_delta_sink
       transformers:
           - name: "delta"
@@ -75,7 +75,7 @@ sinks:
                     name: "cpu.delta"
                 growth_only: True
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}
     - name: disk_sink
       transformers:
           - name: "rate_of_change"
@@ -90,7 +90,7 @@ sinks:
                         unit: "\\1/s"
                     type: "gauge"
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}
     - name: network_sink
       transformers:
           - name: "rate_of_change"
@@ -105,4 +105,4 @@ sinks:
                         unit: "\\1/s"
                     type: "gauge"
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}

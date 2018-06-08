@@ -9,9 +9,9 @@
 {%- for k, v in publisher.items() %}
 {%- if v.get('enabled', False) and v.get('publish_event', False) %}
 {%- if k == 'default' %}
-{%- do publisher_lst.append( '- direct://' ) %}
+{%- do publisher_lst.append( 'direct://' ) %}
 {%- else %}
-{%- do publisher_lst.append( '- ' + v.url ) %}
+{%- do publisher_lst.append( v.url ) %}
 {%- endif %}
 {%- endif %}
 {%- endfor %}
@@ -26,4 +26,4 @@ sinks:
     - name: event_sink
       transformers:
       publishers:
-          {{ '\n'.join(publisher_lst) }}
+          {{ publisher_lst|yaml(False)|indent(10) }}
