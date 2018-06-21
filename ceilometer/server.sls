@@ -90,7 +90,7 @@ ceilometer_general_logging_conf:
 {%- for name, rule in server.get('policy', {}).items() %}
 
 {%- if rule != None %}
-rule_{{ name }}_present:
+ceilometer_keystone_rule_{{ name }}_present:
   keystone_policy.rule_present:
   - path: /etc/ceilometer/policy.json
   - name: {{ name }}
@@ -100,7 +100,7 @@ rule_{{ name }}_present:
 
 {%- else %}
 
-rule_{{ name }}_absent:
+ceilometer_keystone_rule_{{ name }}_absent:
   keystone_policy.rule_absent:
   - path: /etc/ceilometer/policy.json
   - name: {{ name }}
