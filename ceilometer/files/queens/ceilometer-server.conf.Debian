@@ -233,6 +233,9 @@ max_retry_interval = {{ server.coordination_backend.max_retry_interval }}
 # This option is deprecated for removal.
 # Its value may be silently ignored in the future.
 #workload_partitioning = false
+{%- if server.get('notification', {}).workload_partitioning is defined %}
+workload_partitioning = {{ server.notification.workload_partitioning }}
+{%- endif %}
 
 # Messaging URLs to listen for notifications. Example:
 # rabbit://user:pass@host1:port1[,user:pass@hostN:portN]/virtual_host
@@ -246,10 +249,16 @@ max_retry_interval = {{ server.coordination_backend.max_retry_interval }}
 # advised when transformations are applied in pipeline. (integer value)
 # Minimum value: 1
 #batch_size = 100
+{%- if server.get('notification', {}).batch_size is defined %}
+batch_size = {{ server.notification.batch_size }}
+{%- endif %}
 
 # Number of seconds to wait before publishing samples when batch_size is not
 # reached (None means indefinitely) (integer value)
 #batch_timeout = 5
+{%- if server.get('notification', {}).batch_timeout is defined %}
+batch_timeout = {{ server.notification.batch_timeout }}
+{%- endif %}
 
 # Number of workers for notification service, default value is 1. (integer
 # value)

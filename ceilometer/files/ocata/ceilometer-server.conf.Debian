@@ -540,10 +540,16 @@ batch_polled_samples = {{ server.batch_polled_samples|lower }}
 # Number of notification messages to wait before dispatching them (integer
 # value)
 #batch_size = 1
+{%- if server.get('collector', {}).batch_size is defined %}
+batch_size = {{ server.collector.batch_size }}
+{%- endif %}
 
 # Number of seconds to wait before dispatching samples when batch_size is not
 # reached (None means indefinitely) (integer value)
 #batch_timeout = <None>
+{%- if server.get('collector', {}).batch_timeout is defined %}
+batch_timeout = {{ server.collector.batch_timeout }}
+{%- endif %}
 
 # Number of workers for collector service. default value is 1. (integer value)
 # Minimum value: 1
@@ -1249,6 +1255,9 @@ token_cache_time = -1
 # Enable workload partitioning, allowing multiple notification agents to be run
 # simultaneously. (boolean value)
 #workload_partitioning = false
+{%- if server.get('notification', {}).workload_partitioning is defined %}
+workload_partitioning = {{ server.notification.workload_partitioning }}
+{%- endif %}
 
 # Messaging URLs to listen for notifications. Example:
 # rabbit://user:pass@host1:port1[,user:pass@hostN:portN]/virtual_host
@@ -1262,10 +1271,16 @@ token_cache_time = -1
 # advised when transformations are applied in pipeline. (integer value)
 # Minimum value: 1
 #batch_size = 100
+{%- if server.get('notification', {}).batch_size is defined %}
+batch_size = {{ server.notification.batch_size }}
+{%- endif %}
 
 # Number of seconds to wait before publishing samples when batch_size is not
 # reached (None means indefinitely) (integer value)
 #batch_timeout = 5
+{%- if server.get('notification', {}).batch_timeout is defined %}
+batch_timeout = {{ server.notification.batch_timeout }}
+{%- endif %}
 
 # Number of workers for notification service, default value is 1. (integer
 # value)

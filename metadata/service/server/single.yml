@@ -47,8 +47,6 @@ parameters:
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
         ha_queues: true
-        # Workaround for https://bugs.launchpad.net/ceilometer/+bug/1337715
-        rpc_thread_pool_size: 5
       database:
         engine: mongodb
         host: ${_param:ceilometer_database_host}

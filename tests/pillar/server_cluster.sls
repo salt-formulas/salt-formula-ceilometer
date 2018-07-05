@@ -3,7 +3,7 @@ ceilometer:
     debug: true
     region: RegionOne
     enabled: true
-    version: mitaka
+    version: pike
     cluster: true
     secret: password
     ttl: 86400
@@ -59,6 +59,9 @@ ceilometer:
         enabled: true
         host: 127.0.0.4
         port: 8086
+    notification:
+      batch_timeout: 10
+      batch_size: 100
       policy:
         segregation: 'rule:context_is_admin'
         'telemetry:get_resource':

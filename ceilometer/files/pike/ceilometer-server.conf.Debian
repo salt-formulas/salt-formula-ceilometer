@@ -56,30 +56,42 @@ max_retry_interval = {{ server.coordination_backend.max_retry_interval }}
 [cors]
 
 
-{% if server.get('cors', {}).allowed_origin is defined %}
+{%- if server.get('cors', {}).allowed_origin is defined %}
 allowed_origin = {{ server.cors.allowed_origin }}
-{% endif %}
+{%- endif %}
 
-{% if server.get('cors', {}).allow_credentials is defined %}
+{%- if server.get('cors', {}).allow_credentials is defined %}
 allow_credentials = {{ server.cors.allow_credentials }}
-{% endif %}
+{%- endif %}
 
-{% if server.get('cors', {}).expose_headers is defined %}
+{%- if server.get('cors', {}).expose_headers is defined %}
 expose_headers = {{ server.cors.expose_headers }}
-{% endif %}
+{%- endif %}
 
-{% if server.get('cors', {}).max_age is defined %}
+{%- if server.get('cors', {}).max_age is defined %}
 max_age = {{ server.cors.max_age }}
-{% endif %}
+{%- endif %}
 
-{% if server.get('cors', {}).allow_methods is defined %}
+{%- if server.get('cors', {}).allow_methods is defined %}
 allow_methods = {{ server.cors.allow_methods }}
-{% endif %}
+{%- endif %}
 
-{% if server.get('cors', {}).allow_headers is defined %}
+{%- if server.get('cors', {}).allow_headers is defined %}
 allow_headers = {{ server.cors.allow_headers }}
-{% endif %}
+{%- endif %}
 
+[notification]
+{%- if server.get('notification', {}).workload_partitioning is defined %}
+workload_partitioning = {{ server.notification.workload_partitioning }}
+{%- endif %}
+
+{%- if server.get('notification', {}).batch_size is defined %}
+batch_size = {{ server.notification.batch_size }}
+{%- endif %}
+
+{%- if server.get('notification', {}).batch_timeout is defined %}
+batch_timeout = {{ server.notification.batch_timeout }}
+{%- endif %}
 
 [database]
 
