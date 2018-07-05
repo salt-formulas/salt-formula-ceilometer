@@ -1,0 +1,24 @@
+applications:
+- ceilometer
+classes:
+- service.ceilometer.server.cluster.common
+parameters:
+  ceilometer:
+    server:
+      publisher:
+        default:
+          enabled: true
+          publish_event: true
+          publish_metric: true
+      database:
+        engine: mongodb
+        members:
+        - host: ${_param:cluster_node01_address}
+          port: 27017
+        - host: ${_param:cluster_node02_address}
+          port: 27017
+        - host: ${_param:cluster_node03_address}
+          port: 27017
+        name: ceilometer
+        user: ceilometer
+        password: ${_param:mongodb_ceilometer_password}

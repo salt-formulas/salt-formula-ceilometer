@@ -9,18 +9,17 @@ parameters:
     openstack_fluentd_handler_enabled: false
     openstack_ossyslog_handler_enabled: false
   ceilometer:
-    agent:
+    server:
       enabled: true
       version: ${_param:ceilometer_version}
       secret: ${_param:ceilometer_secret_key}
-      publisher:
-        default:
-          enabled: true
-          publish_event: true
-          publish_metric: true
+      ttl: 86400
+      bind:
+        host: ${_param:single_address}
+        port: 8777
       identity:
         engine: keystone
-        host: ${_param:cluster_vip_address}
+        host: ${_param:single_address}
         port: 35357
         tenant: service
         user: ceilometer
@@ -37,8 +36,9 @@ parameters:
             enabled: ${_param:openstack_ossyslog_handler_enabled}
       message_queue:
         engine: rabbitmq
-        host: ${_param:cluster_vip_address}
+        host: ${_param:single_address}
         port: 5672
         user: openstack
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
+        ha_queues: true

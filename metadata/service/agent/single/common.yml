@@ -13,11 +13,6 @@ parameters:
       enabled: true
       version: ${_param:ceilometer_version}
       secret: ${_param:ceilometer_secret_key}
-      publisher:
-        default:
-          enabled: true
-          publish_event: true
-          publish_metric: true
       identity:
         engine: keystone
         host: ${_param:cluster_vip_address}
@@ -42,4 +37,3 @@ parameters:
         user: openstack
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
-        ha_queues: true

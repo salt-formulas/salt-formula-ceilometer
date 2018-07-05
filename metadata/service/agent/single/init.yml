@@ -1,0 +1,12 @@
+applications:
+- ceilometer
+classes:
+- service.ceilometer.agent.single.common
+parameters:
+  ceilometer:
+    agent:
+      publisher:
+        default:
+          enabled: true
+          publish_event: true
+          publish_metric: true

@@ -9,20 +9,10 @@ parameters:
     openstack_fluentd_handler_enabled: false
     openstack_ossyslog_handler_enabled: false
   ceilometer:
-    server:
+    agent:
       enabled: true
       version: ${_param:ceilometer_version}
-      cluster: true
       secret: ${_param:ceilometer_secret_key}
-      ttl: 86400
-      publisher:
-        default:
-          enabled: true
-          publish_event: true
-          publish_metric: true
-      bind:
-        host: ${_param:cluster_local_address}
-        port: 8777
       identity:
         engine: keystone
         host: ${_param:cluster_vip_address}
@@ -47,15 +37,4 @@ parameters:
         user: openstack
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
-      database:
-        engine: mongodb
-        members:
-        - host: ${_param:cluster_node01_address}
-          port: 27017
-        - host: ${_param:cluster_node02_address}
-          port: 27017
-        - host: ${_param:cluster_node03_address}
-          port: 27017
-        name: ceilometer
-        user: ceilometer
-        password: ${_param:mongodb_ceilometer_password}
+        ha_queues: true

@@ -1,0 +1,19 @@
+applications:
+- ceilometer
+classes:
+- service.ceilometer.server.single.common
+parameters:
+  ceilometer:
+    server:
+      publisher:
+        default:
+          enabled: true
+          publish_event: true
+          publish_metric: true
+      database:
+        engine: mongodb
+        host: ${_param:ceilometer_database_host}
+        port: 27017
+        name: ceilometer
+        user: ceilometer
+        password: ${_param:mongodb_ceilometer_password}

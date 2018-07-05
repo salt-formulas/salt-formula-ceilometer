@@ -1,11 +1,12 @@
 {%- from "ceilometer/map.jinja" import server with context %}
 {%- from "ceilometer/map.jinja" import agent with context %}
 {%- if server.get('enabled', False) %}
-{%- set publisher = server.publisher %}
+{%- set publisher = server.get('publisher', {}) %}
 {%- else %}
-{%- set publisher = agent.publisher %}
+{%- set publisher = agent.get('publisher', {}) %}
 {%- endif %}
 {%- set publisher_lst = [] %}
+{%- if publisher %}
 {%- for k, v in publisher.items() %}
 {%- if v.get('enabled', False) and v.get('publish_metric', False) %}
 {%- if k == 'default' %}
@@ -17,6 +18,9 @@
 {%- endif %}
 {%- endif %}
 {%- endfor %}
+{%- else %}
+{%- do publisher_lst.append( 'notifier://' ) %}
+{%- endif %}
 ---
 sources:
     - name: meter_source
