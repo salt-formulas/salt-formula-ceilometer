@@ -190,6 +190,20 @@ Ceilometer compute agent
           virtual_host: '/openstack'
           rabbit_ha_queues: true
 
+Ceilometer compute agent vmware:
+--------------------------------
+
+.. code-block:: yaml
+
+
+    ceilometer:
+      agent:
+        enabled: true
+        vmware:
+          enabled: true
+          host_ip: 1.2.3.4
+          host_username: vmware_username
+          host_password: vmware_password
 
 Ceilometer instance discovery method
 ------------------------------------

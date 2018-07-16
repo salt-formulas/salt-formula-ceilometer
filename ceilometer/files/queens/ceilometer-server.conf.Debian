@@ -407,7 +407,8 @@ interface = internal
 # Deprecated group/name - [service_types]/cinderv2
 #cinder = volumev3
 
-
+{%- if server.get('vmware', {}).get('enabled', False) %}
+{%- set _data = server.vmware %}
 [vmware]
 
 #
@@ -416,37 +417,62 @@ interface = internal
 
 # IP address of the VMware vSphere host. (host address value)
 #host_ip = 127.0.0.1
+{%- if _data.host_ip is defined %}
+host_ip = {{ _data.host_ip }}
+{%- endif %}
 
 # Port of the VMware vSphere host. (port value)
 # Minimum value: 0
 # Maximum value: 65535
 #host_port = 443
+{%- if _data.host_port is defined %}
+host_port = {{ _data.host_port }}
+{%- endif %}
 
 # Username of VMware vSphere. (string value)
 #host_username =
+host_username = {{ _data.host_username }}
 
 # Password of VMware vSphere. (string value)
 #host_password =
+host_password = {{ _data.host_password }}
 
 # CA bundle file to use in verifying the vCenter server certificate. (string
 # value)
 #ca_file = <None>
+{%- if _data.cacert_file is defined %}
+ca_file = {{ _data.cacert_file }}
+{%- endif %}
 
 # If true, the vCenter server certificate is not verified. If false, then the
 # default CA truststore is used for verification. This option is ignored if
 # "ca_file" is set. (boolean value)
 #insecure = false
+{%- if _data.insecure is defined %}
+insecure = {{ _data.insecure }}
+{%- endif %}
 
 # Number of times a VMware vSphere API may be retried. (integer value)
 #api_retry_count = 10
+{%- if _data.api_retry_count is defined %}
+api_retry_count = {{ _data.api_retry_count }}
+{%- endif %}
 
 # Sleep time in seconds for polling an ongoing async task. (floating point
 # value)
 #task_poll_interval = 0.5
+{%- if _data.task_poll_interval is defined %}
+task_poll_interval = {{ _data.task_poll_interval }}
+{%- endif %}
 
 # Optional vim service WSDL location e.g http://<server>/vimService.wsdl.
 # Optional over-ride to default location for bug work-arounds. (string value)
 #wsdl_location = <None>
+{%- if _data.wsdl_location is defined %}
+wsdl_location = {{ _data.wsdl_location }}
+{%- endif %}
+
+{%- endif %}
 
 
 [xenapi]
@@ -484,4 +510,3 @@ interface = internal
 [oslo_messaging_{{ messaging_engine }}]
 {%- include "oslo_templates/files/queens/oslo/messaging/_" + messaging_engine + ".conf" %}
 {%- endif %}
-
