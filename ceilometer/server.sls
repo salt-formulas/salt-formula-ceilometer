@@ -52,7 +52,7 @@ ceilometer_general_logging_conf:
         values: {{ server }}
     - watch_in:
       - service: ceilometer_server_services
-{%- if server.version in  ['newton', 'ocata', 'pike'] %}
+{%- if server.version in  ['newton', 'ocata'] %}
       - service: ceilometer_apache_restart
 {%- endif %}
 
@@ -62,7 +62,7 @@ ceilometer_general_logging_conf:
     - group: ceilometer
     - watch_in:
       - service: ceilometer_server_services
-{%- if server.version in  ['newton', 'ocata', 'pike'] %}
+{%- if server.version in  ['newton', 'ocata'] %}
       - service: ceilometer_apache_restart
 {%- endif %}
 
@@ -201,7 +201,7 @@ ceilometer_upgrade:
 {%- endif %}
 
 # for Newton and newer
-{%- if server.version in ['newton', 'ocata', 'pike'] %}
+{%- if server.version in ['newton', 'ocata'] %}
 
 ceilometer_api_apache_config:
   file.managed:
