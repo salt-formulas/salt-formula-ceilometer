@@ -38,7 +38,7 @@ ceilometer_server_fluentd_logger_package:
 ceilometer_general_logging_conf:
   file.managed:
     - name: /etc/ceilometer/logging.conf
-    - source: salt://ceilometer/files/logging.conf
+    - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
     - user: ceilometer
     - group: ceilometer
@@ -49,7 +49,7 @@ ceilometer_general_logging_conf:
 {%- endif %}
     - defaults:
         service_name: ceilometer
-        values: {{ server }}
+        _data: {{ server.logging }}
     - watch_in:
       - service: ceilometer_server_services
 {%- if server.version in  ['newton', 'ocata'] %}
@@ -70,7 +70,7 @@ ceilometer_general_logging_conf:
 {{ service_name }}_logging_conf:
   file.managed:
     - name: /etc/ceilometer/logging/logging-{{ service_name }}.conf
-    - source: salt://ceilometer/files/logging.conf
+    - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
     - require:
       - pkg: ceilometer_server_packages
@@ -80,7 +80,7 @@ ceilometer_general_logging_conf:
     - makedirs: True
     - defaults:
         service_name: {{ service_name }}
-        values: {{ server }}
+        _data: {{ server.logging }}
     - watch_in:
       - service: ceilometer_server_services
 {%- endfor %}
