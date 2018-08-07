@@ -300,6 +300,31 @@ following pillar structure:
             level: WARNING
 
 
+Enable OpenDaylight statistics driver
+---------------------
+
+.. code-block:: yaml
+
+    ceilometer:
+      server:
+        opendaylight: true
+        .....
+      agent:
+        polling:
+          sources:
+            odl_source:
+              meters:
+                - switch
+                - switch.ports
+                - switch.port.receive.bytes
+                .....
+              interval: 300
+              resources:
+                - opendaylight.v2://<odl-controller-ip>:8080/controller/statistics?auth=basic&user=admin&password=unsegreto
+              sinks:
+                - meter_sink
+
+
 More Information
 ================
 

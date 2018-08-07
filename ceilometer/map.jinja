@@ -50,6 +50,7 @@
         'basic': ['ceilometer-agent-central', 'python-ceilometerclient', 'ceilometer-agent-notification'],
         'api': ['ceilometer-api'],
         'db_drivers': ['python-elasticsearch', 'python-influxdb', 'python-pymongo'],
+        'opendaylight': ['python-networking-odl'],
     },
     'RedHat': {
         'alarm': ['openstack-ceilometer-alarm-evaluator', 'openstack-ceilometer-alarm-notifier'],
@@ -57,6 +58,7 @@
         'api': ['openstack-ceilometer-api'],
         'collector':['openstack-ceilometer-collector'],
         'db_drivers': ['python-elasticsearch', 'python-influxdb', 'python-pymongo'],
+        'opendaylight': ['python-networking-odl'],
     },
 }) %}
 
@@ -105,6 +107,8 @@
 {%- else %}
 {%-   do server.update({'pkgs': pkgs.basic}) %}
 {%- endif %}
+
+{%- do server.pkgs.extend(pkgs.opendaylight) if salt['pillar.get']('ceilometer:server:opendaylight', False) %}
 
 {%- if salt['pillar.get']('ceilometer:server:version', 'mitaka') in ['liberty', 'juno', 'kilo'] %}
 {%-   do server.update({'services': services.basic + services.collector + services.alarm + services.webserved}) %}

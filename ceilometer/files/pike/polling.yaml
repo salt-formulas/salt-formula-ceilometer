@@ -4,8 +4,20 @@ sources:
 {%- for source_name, source in agent.polling.sources.items() %}
     - name: {{ source_name }}
       interval: {{ source.get('interval', 300) }}
+      {%- if source.resources is defined %}
+      resources:
+        {%- for resource in source.resources %}
+        - {{ resource }}
+        {%- endfor %}
+      {%- endif %}
       meters:
         {%- for meter in source.meters %}
         - "{{ meter }}"
         {%- endfor %}
+      {%- if source.sinks is defined %}
+      sinks:
+        {%- for sink in source.sinks %}
+        - {{ sink }}
+        {%- endfor %}
+      {%- endif %}
 {%- endfor %}

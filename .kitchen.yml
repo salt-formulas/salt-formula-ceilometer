@@ -65,6 +65,16 @@ suites:
             agent:
               version: <%= ENV['OS_VERSION'] || 'pike' %>
 
+  - name: agent_single_odl
+    provisioner:
+      pillars-from-files:
+        ceilometer.sls: tests/pillar/agent_single_odl.sls
+      pillars:
+        release.sls:
+          ceilometer:
+            agent:
+              version: <%= ENV['OS_VERSION'] || 'pike' %>
+
   - name: server_cluster
     provisioner:
       pillars-from-files:
