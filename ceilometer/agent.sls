@@ -10,6 +10,8 @@ ceilometer_agent_conf:
   - name: /etc/ceilometer/ceilometer.conf
   - source: salt://ceilometer/files/{{ agent.version }}/ceilometer-agent.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_agent_packages
 
@@ -42,7 +44,8 @@ ceilometer_agent_fluentd_logger_package:
     - name: /etc/ceilometer/logging/logging-{{ service_name }}.conf
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
-    - user: ceilometer
+    - mode: 0640
+    - user: root
     - group: ceilometer
     - require:
       - pkg: ceilometer_agent_packages
@@ -86,6 +89,8 @@ ceilometer_agent_pipeline:
   - name: /etc/ceilometer/pipeline.yaml
   - source: salt://ceilometer/files/{{ agent.version }}/pipeline.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_agent_packages
 
@@ -96,6 +101,8 @@ ceilometer_agent_event_pipeline:
   - name: /etc/ceilometer/event_pipeline.yaml
   - source: salt://ceilometer/files/{{ agent.version }}/event_pipeline.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_agent_packages
   - watch_in:
@@ -133,6 +140,8 @@ ceilometer_agent_polling:
   - name: /etc/ceilometer/polling.yaml
   - source: salt://ceilometer/files/{{ agent.version }}/polling.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_agent_packages
   - watch_in:

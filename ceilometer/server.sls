@@ -9,6 +9,8 @@ ceilometer_server_packages:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/ceilometer-server.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
 
@@ -40,7 +42,8 @@ ceilometer_general_logging_conf:
     - name: /etc/ceilometer/logging.conf
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
-    - user: ceilometer
+    - mode: 0640
+    - user: root
     - group: ceilometer
     - require:
       - pkg: ceilometer_server_packages
@@ -72,6 +75,8 @@ ceilometer_general_logging_conf:
     - name: /etc/ceilometer/logging/logging-{{ service_name }}.conf
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
+    - mode: 0640
+    - group: ceilometer
     - require:
       - pkg: ceilometer_server_packages
 {%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
@@ -143,6 +148,8 @@ ceilometer_server_gnocchi_resources:
   - name: /etc/ceilometer/gnocchi_resources.yaml
   - source: salt://ceilometer/files/{{ server.version }}/gnocchi_resources.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
     - pkg: ceilometer_gnocchiclient_pkg
@@ -166,6 +173,8 @@ ceilometer_upgrade:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/pipeline.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
 
@@ -175,6 +184,8 @@ ceilometer_upgrade:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/event_pipeline.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
   - watch_in:
@@ -184,6 +195,8 @@ ceilometer_upgrade:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/event_definitions.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
   - watch_in:
@@ -193,6 +206,8 @@ ceilometer_upgrade:
   file.managed:
   - source: salt://ceilometer/files/{{ server.version }}/gabbi_pipeline.yaml
   - template: jinja
+  - mode: 0640
+  - group: ceilometer
   - require:
     - pkg: ceilometer_server_packages
   - watch_in:
