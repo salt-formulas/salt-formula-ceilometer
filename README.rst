@@ -42,6 +42,13 @@ Ceilometer API/controller node
           user: openstack
           password: pwd
           virtual_host: '/openstack'
+        notification:
+          workers: 8
+          batch_timeout: 10
+          batch_size: 100
+          policy:
+            segregation: 'rule:context_is_admin'
+            'telemetry:get_resource':
 
 Enable CORS parameters
 ------------------------------

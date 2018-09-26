@@ -60,6 +60,7 @@ ceilometer:
         host: 127.0.0.4
         port: 8086
     notification:
+      workers: 8
       batch_timeout: 10
       batch_size: 100
       policy:

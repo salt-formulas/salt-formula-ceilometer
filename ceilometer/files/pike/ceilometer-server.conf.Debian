@@ -93,6 +93,10 @@ batch_size = {{ server.notification.batch_size }}
 batch_timeout = {{ server.notification.batch_timeout }}
 {%- endif %}
 
+{%- if server.get('notification', {}).workers is defined %}
+workers = {{ server.notification.workers }}
+{%- endif %}
+
 [database]
 
 {%- if server.get('database', False) %}

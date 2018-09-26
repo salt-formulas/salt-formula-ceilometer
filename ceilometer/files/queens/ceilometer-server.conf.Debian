@@ -265,6 +265,9 @@ batch_timeout = {{ server.notification.batch_timeout }}
 # Minimum value: 1
 # Deprecated group/name - [DEFAULT]/notification_workers
 #workers = 1
+{%- if server.get('notification', {}).workers is defined %}
+workers = {{ server.notification.workers }}
+{%- endif %}
 
 # Select which pipeline managers to enable to  generate data (multi valued)
 #pipelines = meter
