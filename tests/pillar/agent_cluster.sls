@@ -12,6 +12,10 @@ ceilometer:
             - "*"
           interval: 100
     debug: true
+    libvirt:
+      ssl:
+        enabled: true
+      libvirt_uri: qemu://
     region: RegionOne
     enabled: true
     version: liberty

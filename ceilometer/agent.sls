@@ -15,6 +15,16 @@ ceilometer_agent_conf:
   - require:
     - pkg: ceilometer_agent_packages
 
+{%- if agent.get('libvirt',{}).get('ssl',{}).get('enabled', False) == True  and salt['group.info']('nova') %}
+add_ceilometer_to_nova_group:
+  user.present:
+  - name: ceilometer
+  - groups:
+    - nova
+  - require:
+    - pkg: ceilometer_agent_packages
+{%- endif %}
+
 {% for service_name in agent.services %}
 {{ service_name }}_default:
   file.managed:

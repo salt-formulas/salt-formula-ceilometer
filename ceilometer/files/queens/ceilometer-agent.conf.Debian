@@ -36,6 +36,13 @@ batch_polled_samples = {{ agent.batch_polled_samples|lower }}
 # Override the default libvirt URI (which is dependent on libvirt_type).
 # (string value)
 #libvirt_uri =
+{%- if agent.get('libvirt',{}).get('ssl',{}).get('enabled', False) == True %}
+{%- set libvirt_uri = 'qemu+tls://' ~ grains.get('fqdn') ~ '/system' %}
+{%- endif %}
+
+{%- if libvirt_uri is defined or agent.get('libvirt',{}).libvirt_uri is defined %}
+libvirt_uri = {{ agent.get('libvirt',{}).get('libvirt_uri', libvirt_uri) }}
+{%- endif %}
 
 # Swift reseller prefix. Must be on par with reseller_prefix in proxy-
 # agent.conf. (string value)

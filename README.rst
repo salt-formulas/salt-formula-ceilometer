@@ -188,6 +188,10 @@ Ceilometer compute agent
           tenant: service
           user: ceilometer
           password: pwd
+        libvirt:
+          ssl:
+            enabled: true
+          libvirt_uri: qemu+tls://
         message_queue:
           engine: rabbitmq
           host: 127.0.0.1

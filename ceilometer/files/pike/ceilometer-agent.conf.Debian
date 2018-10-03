@@ -20,6 +20,14 @@ transport_url = rabbit://{% for member in agent.message_queue.members -%}
 transport_url = rabbit://{{ agent.message_queue.user }}:{{ agent.message_queue.password }}@{{ agent.message_queue.host }}:{{ rabbit_port }}/{{ agent.message_queue.virtual_host }}
 {%- endif %}
 
+{%- if agent.get('libvirt',{}).get('ssl',{}).get('enabled', False) == True %}
+{%- set libvirt_uri = 'qemu+tls://' ~ grains.get('fqdn') ~ '/system' %}
+{%- endif %}
+
+{%- if libvirt_uri is defined or agent.get('libvirt',{}).libvirt_uri is defined %}
+libvirt_uri = {{ agent.get('libvirt',{}).get('libvirt_uri', libvirt_uri) }}
+{%- endif %}
+
 [compute]
 
 instance_discovery_method = {{ agent.get('discovery_method', 'libvirt_metadata') }}

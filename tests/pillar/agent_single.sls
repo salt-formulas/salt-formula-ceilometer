@@ -8,6 +8,10 @@ ceilometer:
     publisher:
       default:
         enabled: true
+    libvirt:
+      ssl:
+        enabled: true
+      libvirt_uri: qemu://
     identity:
       engine: keystone
       host: 127.0.0.1
