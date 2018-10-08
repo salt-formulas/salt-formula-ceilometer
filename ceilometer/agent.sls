@@ -1,9 +1,14 @@
 {%- from "ceilometer/map.jinja" import agent with context %}
 {%- if agent.enabled %}
 
+include:
+  - ceilometer._ssl.rabbitmq
+
 ceilometer_agent_packages:
   pkg.installed:
   - names: {{ agent.pkgs }}
+  - require_in:
+    - sls: ceilometer._ssl.rabbitmq
 
 ceilometer_agent_conf:
   file.managed:
@@ -14,6 +19,7 @@ ceilometer_agent_conf:
   - group: ceilometer
   - require:
     - pkg: ceilometer_agent_packages
+    - sls: ceilometer._ssl.rabbitmq
 
 {%- if agent.get('libvirt',{}).get('ssl',{}).get('enabled', False) == True %}
 add_ceilometer_to_nova_group:
@@ -120,28 +126,6 @@ ceilometer_agent_event_pipeline:
 
 {%- endif %}
 
-{%- if agent.message_queue.get('ssl',{}).get('enabled', False) %}
-rabbitmq_ca_ceilometer_agent:
-{%- if agent.message_queue.ssl.cacert is defined %}
-  file.managed:
-    - name: {{ agent.message_queue.ssl.cacert_file }}
-    - contents_pillar: ceilometer:agent:message_queue:ssl:cacert
-    - mode: 0444
-    - makedirs: true
-    - require_in:
-      - file: ceilometer_agent_conf
-    - watch_in:
-      - ceilometer_agent_services
-{%- else %}
-  file.exists:
-   - name: {{ agent.message_queue.ssl.get('cacert_file', agent.cacert_file) }}
-   - require_in:
-     - file: ceilometer_agent_conf
-   - watch_in:
-      - ceilometer_agent_services
-{%- endif %}
-{%- endif %}
-
 {# Starting Pike switch to polling.yaml to handle meters polling as recommended in upstream #}
 {%- if agent.version not in ['liberty', 'juno', 'kilo', 'mitaka', 'newton', 'ocata'] and agent.polling is defined %}
 
@@ -169,5 +153,6 @@ ceilometer_agent_services:
   - watch:
     - file: ceilometer_agent_conf
     - file: ceilometer_agent_pipeline
+    - sls: ceilometer._ssl.rabbitmq
 
 {%- endif %}
